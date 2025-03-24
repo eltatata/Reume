@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  reume: 
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: reume
+    ports: 
+      - "3000:3000"
+    env_file: 
+      - .env
