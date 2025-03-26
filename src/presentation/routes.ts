@@ -15,7 +15,7 @@ export class AppRoutes {
      *         description: API is healthy.
      */
     router.get('/api/health', (req, res) => {
-      res.json({ status: 'ok' });
+      res.json({ status: 'The API is healthy' });
     });
 
     return router;
