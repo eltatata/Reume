@@ -51,11 +51,15 @@
   },
   "dependencies": {
     "@prisma/client": "^6.5.0",
+    "@types/bcryptjs": "^2.4.6",
+    "bcryptjs": "^3.0.2",
     "dotenv": "^16.4.7",
     "env-var": "^7.5.0",
     "express": "^4.21.2",
     "morgan": "^1.10.0",
+    "resend": "^4.2.0",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1"
+    "swagger-ui-express": "^5.0.1",
+    "zod": "^3.24.2"
   }
 }
