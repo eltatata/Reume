@@ -25,6 +25,6 @@ jobs:
             docker-compose pull
             docker-compose up -d --build
 
-            sudo npx prisma migrate deploy
+            npx prisma migrate deploy
             
             docker image prune -af --filter "until=24h"
