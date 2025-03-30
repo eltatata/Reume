@@ -1,7 +1,8 @@
 node_modules
 dist/
 coverage/
-volumes
+volumes/
+generated/prisma/
 .env
 .env.dev
 .env.test
