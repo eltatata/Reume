@@ -12,16 +12,19 @@ export class UserEntity {
     public readonly phone?: string,
   ) {}
 
-  public toJSON() {
+  static toJSON(user: unknown): UserEntity {
+    const { id, firstName, lastName, email, role, verified, createdAt, phone } =
+      user as UserEntity;
+
     return {
-      id: this.id,
-      firstName: this.firstName,
-      lastName: this.lastName,
-      email: this.email,
-      role: this.role,
-      verified: this.verified,
-      phone: this.phone,
-      createdAt: this.createdAt,
+      id,
+      firstName,
+      lastName,
+      email,
+      role,
+      verified,
+      createdAt,
+      phone,
     };
   }
 }
