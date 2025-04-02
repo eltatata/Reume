@@ -25,9 +25,12 @@ export class Server {
 
   start() {
     this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: true }));
+
     if (envs.NODE_ENV === 'development') {
       this.app.use(morgan('dev'));
     }
+
     this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
     this.app.use(this.routes);

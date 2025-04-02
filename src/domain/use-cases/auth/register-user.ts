@@ -1,5 +1,6 @@
 import { bcryptAdapter } from '../../../config';
 import {
+  CustomError,
   RegisterUserDto,
   RegisterUserUseCase,
   UserEntity,
@@ -13,7 +14,7 @@ export class RegisterUser implements RegisterUserUseCase {
     const existingUser = await this.userRepository.findByEmail(
       registerUserDto.email,
     );
-    if (existingUser) throw new Error('User already exists');
+    if (existingUser) throw CustomError.conflict('User already exists');
 
     const userWithHashedPassword = {
       ...registerUserDto,

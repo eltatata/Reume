@@ -1,5 +1,4 @@
 import { z, ZodError } from 'zod';
-
 import { ValidationResult } from '../../domain';
 
 export class ZodAdapter {
