@@ -12,9 +12,10 @@
     "test:coverage": "jest --coverage",
     "lint": "eslint . --ext .ts --ignore-pattern dist",
     "lint:fix": "eslint . --ext .ts --fix --ignore-pattern dist",
-    "docker:up": "docker compose --env-file .env --profile development up -d --build",
     "docker:db:dev": "docker compose --env-file .env.dev up -d postgres",
     "docker:db:test": "docker compose --env-file .env.test up -d postgres_test",
+    "prisma:migrate:dev": "env-cmd -f .env.dev npx prisma migrate dev",
+    "prisma:migrate:test": "env-cmd -f .env.test npx prisma migrate dev",
     "prepare": "husky"
   },
   "lint-staged": {
