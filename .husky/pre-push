@@ -1,2 +1,4 @@
 npx lint-staged
+npm run docker:db:test
 npm run test
+npm run docker:db:test:stop
