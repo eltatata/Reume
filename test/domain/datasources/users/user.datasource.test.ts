@@ -10,7 +10,7 @@ describe('UserDatasource', () => {
   });
 
   describe('findById', () => {
-    it('should return a user when a valid id is provided', async () => {
+    test('should return a user when a valid id is provided', async () => {
       const user = await datasource.findById('1');
 
       expect(user).toBeDefined();
@@ -18,7 +18,7 @@ describe('UserDatasource', () => {
       expect(user?.email).toBe('john.doe@example.com');
     });
 
-    it('should return null when an invalid id is provided', async () => {
+    test('should return null when an invalid id is provided', async () => {
       const user = await datasource.findById('999');
 
       expect(user).toBeNull();
@@ -26,7 +26,7 @@ describe('UserDatasource', () => {
   });
 
   describe('findAll', () => {
-    it('should return all users', async () => {
+    test('should return all users', async () => {
       const users = await datasource.findAll();
 
       expect(users).toBeDefined();
@@ -34,7 +34,7 @@ describe('UserDatasource', () => {
       expect(users[0].id).toBe('1');
     });
 
-    it('should return an empty array when no users exist', async () => {
+    test('should return an empty array when no users exist', async () => {
       await datasource.delete('1');
       const users = await datasource.findAll();
 
@@ -43,7 +43,7 @@ describe('UserDatasource', () => {
   });
 
   describe('create', () => {
-    it('should create a new user successfully', async () => {
+    test('should create a new user successfully', async () => {
       const newUser = new UserEntity(
         '2',
         'Jane',
@@ -67,7 +67,7 @@ describe('UserDatasource', () => {
   });
 
   describe('update', () => {
-    it('should update an existing user successfully', async () => {
+    test('should update an existing user successfully', async () => {
       const updatedUser = new UserEntity(
         '1',
         'John',
@@ -86,7 +86,7 @@ describe('UserDatasource', () => {
       expect(result?.role).toBe(UserRole.ADMIN);
     });
 
-    it('should return null when updating a non-existent user', async () => {
+    test('should return null when updating a non-existent user', async () => {
       const updatedUser = new UserEntity(
         '999',
         'Non',
@@ -105,7 +105,7 @@ describe('UserDatasource', () => {
   });
 
   describe('delete', () => {
-    it('should delete an existing user successfully', async () => {
+    test('should delete an existing user successfully', async () => {
       const result = await datasource.delete('1');
 
       expect(result).toBe(true);
@@ -114,7 +114,7 @@ describe('UserDatasource', () => {
       expect(deletedUser).toBeNull();
     });
 
-    it('should return false when deleting a non-existent user', async () => {
+    test('should return false when deleting a non-existent user', async () => {
       const result = await datasource.delete('999');
 
       expect(result).toBe(false);
@@ -122,7 +122,7 @@ describe('UserDatasource', () => {
   });
 
   describe('findByEmail', () => {
-    it('should return a user when a valid email is provided', async () => {
+    test('should return a user when a valid email is provided', async () => {
       const user = await datasource.findByEmail('john.doe@example.com');
 
       expect(user).toBeDefined();
@@ -130,7 +130,7 @@ describe('UserDatasource', () => {
       expect(user?.id).toBe('1');
     });
 
-    it('should return null when an invalid email is provided', async () => {
+    test('should return null when an invalid email is provided', async () => {
       const user = await datasource.findByEmail('non.existent@example.com');
 
       expect(user).toBeNull();
