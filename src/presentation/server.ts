@@ -43,11 +43,13 @@ export class Server {
     );
 
     this.serverListener = this.app.listen(this.port, () => {
-      console.log(
-        envs.NODE_ENV === 'development'
-          ? `Server running on http://localhost:${this.port}`
-          : `Server running`,
-      );
+      if (envs.NODE_ENV !== 'test') {
+        console.log(
+          envs.NODE_ENV === 'development'
+            ? `Server running on http://localhost:${this.port}`
+            : `Server running`,
+        );
+      }
     });
   }
 
