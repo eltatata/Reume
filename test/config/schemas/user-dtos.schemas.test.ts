@@ -1,7 +1,7 @@
 import { registerUserSchema } from '../../../src/config/schemas/user-dtos.schemas';
 
 describe('registerUserSchema', () => {
-  it('should validate a valid user', () => {
+  test('should validate a valid user', () => {
     const user = {
       firstname: 'John',
       lastname: 'Doe',
