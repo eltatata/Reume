@@ -14,6 +14,7 @@
     "lint:fix": "eslint . --ext .ts --fix --ignore-pattern dist",
     "docker:db:dev": "docker compose --env-file .env.dev up -d postgres",
     "docker:db:test": "docker compose --env-file .env.test up -d postgres_test",
+    "docker:db:test:stop": "docker compose --env-file .env.test stop postgres_test",
     "prisma:migrate:dev": "env-cmd -f .env.dev npx prisma migrate dev",
     "prisma:migrate:test": "env-cmd -f .env.test npx prisma migrate dev",
     "prepare": "husky"
