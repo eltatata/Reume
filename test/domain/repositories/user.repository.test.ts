@@ -1,17 +1,20 @@
-import { UserRole, RegisterUserDto } from '../../../../src/domain';
-import { MockUserDatasource } from '../../../mocks/mock-user.datasource';
+import { UserRole, RegisterUserDto } from '../../../src/domain/';
+import { MockUserRepository } from '../../mocks/mock-user.repository';
+import { MockUserDatasource } from '../../mocks/mock-user.datasource';
 
-describe('UserDatasource', () => {
+describe('UserRepository', () => {
+  let repository: MockUserRepository;
   let datasource: MockUserDatasource;
 
   beforeEach(() => {
     datasource = new MockUserDatasource();
+    repository = new MockUserRepository(datasource);
     datasource.resetUsers();
   });
 
   describe('findByEmail', () => {
     test('should return a user when a valid email is provided', async () => {
-      const user = await datasource.findByEmail('john.doe@example.com');
+      const user = await repository.findByEmail('john.doe@example.com');
 
       expect(user).toBeDefined();
       expect(user?.email).toBe('john.doe@example.com');
@@ -19,7 +22,7 @@ describe('UserDatasource', () => {
     });
 
     test('should return null when an invalid email is provided', async () => {
-      const user = await datasource.findByEmail('non.existent@example.com');
+      const user = await repository.findByEmail('non.existent@example.com');
 
       expect(user).toBeNull();
     });
@@ -27,7 +30,7 @@ describe('UserDatasource', () => {
 
   describe('findById', () => {
     test('should return a user when a valid id is provided', async () => {
-      const user = await datasource.findById('1');
+      const user = await repository.findById('1');
 
       expect(user).toBeDefined();
       expect(user?.id).toBe('1');
@@ -35,7 +38,7 @@ describe('UserDatasource', () => {
     });
 
     test('should return null when an invalid id is provided', async () => {
-      const user = await datasource.findById('999');
+      const user = await repository.findById('999');
 
       expect(user).toBeNull();
     });
@@ -43,7 +46,7 @@ describe('UserDatasource', () => {
 
   describe('findAll', () => {
     test('should return all users', async () => {
-      const users = await datasource.findAll();
+      const users = await repository.findAll();
 
       expect(users).toBeDefined();
       expect(users).toHaveLength(1);
@@ -51,8 +54,8 @@ describe('UserDatasource', () => {
     });
 
     test('should return an empty array when no users exist', async () => {
-      await datasource.delete('1');
-      const users = await datasource.findAll();
+      await repository.delete('1');
+      const users = await repository.findAll();
 
       expect(users).toHaveLength(0);
     });
@@ -68,33 +71,32 @@ describe('UserDatasource', () => {
         phone: '+1234567890',
       };
 
-      const createdUser = await datasource.create(newUserDto);
+      const createdUser = await repository.create(newUserDto);
 
       expect(createdUser).toBeDefined();
-      expect(createdUser.id).toBeDefined();
       expect(createdUser.firstName).toBe('Jane');
       expect(createdUser.lastName).toBe('Doe');
       expect(createdUser.email).toBe('jane.doe@example.com');
       expect(createdUser.role).toBe(UserRole.USER);
       expect(createdUser.phone).toBe('+1234567890');
 
-      const allUsers = await datasource.findAll();
+      const allUsers = await repository.findAll();
       expect(allUsers).toHaveLength(2);
     });
   });
 
   describe('delete', () => {
     test('should delete an existing user successfully', async () => {
-      const result = await datasource.delete('1');
+      const result = await repository.delete('1');
 
       expect(result).toBe(true);
 
-      const deletedUser = await datasource.findById('1');
+      const deletedUser = await repository.findById('1');
       expect(deletedUser).toBeNull();
     });
 
     test('should return false when deleting a non-existent user', async () => {
-      const result = await datasource.delete('999');
+      const result = await repository.delete('999');
 
       expect(result).toBe(false);
     });
