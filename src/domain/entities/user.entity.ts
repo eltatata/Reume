@@ -12,9 +12,9 @@ export class UserEntity {
     public readonly phone?: string,
   ) {}
 
-  static toJSON(user: unknown): UserEntity {
+  static toJSON(obj: unknown): UserEntity {
     const { id, firstName, lastName, email, role, verified, createdAt, phone } =
-      user as UserEntity;
+      obj as UserEntity;
 
     return {
       id,
