@@ -14,6 +14,8 @@ tags:
     description: Health check endpoints
   - name: Auth
     description: Authentication endpoints
+  - name: OTP
+    description: OTP endpoints
 
 paths:
   /health:
@@ -82,7 +84,57 @@ paths:
                     description: Error message
               example:
                 message: User with this email already exists
-
+  /otp/verify:
+    post:
+      summary: Verify OTP
+      description: Verifies the OTP for the user
+      tags: [OTP]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyOtpRequest'
+      responses:
+        '200':
+          description: OTP verified successfully
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message
+              example:
+                message: Invalid OTP
+        '404':
+          description: OTP not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message
+              example:
+                message: OTP not found
+        '409':
+          description: OTP already used
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message
+              example:
+                message: OTP already used
+                
 components:
   schemas:
     RegisterUserRequest:
@@ -119,6 +171,24 @@ components:
           type: string
           description: User's phone number (optional)
           example: "+1234567890"
+
+    VerifyOtpRequest:
+      type: object
+      required:
+        - userId
+        - otp
+      properties:
+        userId:
+          type: string
+          format: uuid
+          description: User's unique identifier
+          example: 123e4567-e89b-12d3-a456-426614174000
+        otp:
+          type: string
+          description: OTP to verify
+          example: 123456
+          minLength: 6
+          maxLength: 6
     
     UserResponse:
       type: object
@@ -159,3 +229,11 @@ components:
           type: string
           description: User's phone number (if provided)
           example: "+1234567890" 
+        
+    VerifyOtpResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Success message
+          example: OTP verified successfully

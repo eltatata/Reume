@@ -8,5 +8,4 @@ export const envs = {
   POSTGRES_PASSWORD: get('POSTGRES_PASSWORD').required().asString(),
   POSTGRES_DB: get('POSTGRES_DB').required().asString(),
   RESEND_API_KEY: get('RESEND_API_KEY').required().asString(),
-  OTP_EXPIRATION_DATE_TIME: get('OTP_EXPIRATION_DATE_TIME').required().asInt(),
 };

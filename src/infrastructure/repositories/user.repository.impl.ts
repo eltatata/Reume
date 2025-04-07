@@ -24,8 +24,8 @@ export class UserRepositoryImpl implements UserRepository {
     return this.userDataSource.create(user);
   }
 
-  update(): Promise<UserEntity | null> {
-    throw new Error('Method not implemented.');
+  update(id: string, user: Partial<UserEntity>): Promise<UserEntity | null> {
+    return this.userDataSource.update(id, user);
   }
 
   delete(id: string): Promise<boolean> {

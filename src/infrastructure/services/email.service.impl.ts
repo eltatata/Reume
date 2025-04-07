@@ -20,8 +20,6 @@ export class EmailServiceImpl implements EmailService {
       <p>Best regards,<br>The Team</p>
     `;
 
-    console.log('Sending email to', to);
-
     await this.resend.emails.send({
       from: 'Resend <onboarding@resend.dev>',
       to,

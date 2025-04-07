@@ -39,8 +39,15 @@ export class UserDatasourceImpl implements UserDatasource {
     return UserEntity.toJSON(newUser);
   }
 
-  update(): Promise<UserEntity | null> {
-    throw new Error('Method not implemented.');
+  async update(
+    id: string,
+    user: Partial<UserEntity>,
+  ): Promise<UserEntity | null> {
+    const updatedUser = await prisma.user.update({
+      where: { id },
+      data: user,
+    });
+    return updatedUser ? UserEntity.toJSON(updatedUser) : null;
   }
 
   async delete(id: string): Promise<boolean> {

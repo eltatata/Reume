@@ -1,5 +1,4 @@
 import { z } from 'zod';
-
 import { RegisterUserDto } from '../../domain';
 
 export const registerUserSchema: z.ZodType<RegisterUserDto> = z.object({
