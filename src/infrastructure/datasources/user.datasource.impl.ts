@@ -1,5 +1,10 @@
 import { prisma } from '../../data/prisma.connection';
-import { UserEntity, UserDatasource, RegisterUserDto } from '../../domain';
+import {
+  UserEntity,
+  UserDatasource,
+  RegisterUserDto,
+  UpdateUserDto,
+} from '../../domain';
 
 export class UserDatasourceImpl implements UserDatasource {
   async findByEmail(email: string): Promise<UserEntity | null> {
@@ -41,11 +46,11 @@ export class UserDatasourceImpl implements UserDatasource {
 
   async update(
     id: string,
-    user: Partial<UserEntity>,
+    updateUserDto: UpdateUserDto,
   ): Promise<UserEntity | null> {
     const updatedUser = await prisma.user.update({
       where: { id },
-      data: user,
+      data: updateUserDto,
     });
     return updatedUser ? UserEntity.toJSON(updatedUser) : null;
   }

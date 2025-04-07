@@ -5,6 +5,7 @@ export * from './interfaces/user/user.interfaces';
 export * from './interfaces/auth/register-user.interfaces';
 export * from './interfaces/otp/otp.interfaces';
 export * from './dtos/auth/register-user';
+export * from './dtos/user/update-user';
 export * from './dtos/otp/verify-otp';
 export * from './entities/user.entity';
 export * from './entities/otp.entity';
