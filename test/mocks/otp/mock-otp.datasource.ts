@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { OtpDatasource, OtpEntity } from '../../src/domain';
+import { OtpDatasource, OtpEntity } from '../../../src/domain';
 
 interface OtpMock {
   id: string;

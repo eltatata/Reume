@@ -1,5 +1,6 @@
-import { OtpRepository, OtpEntity } from '../../src/domain';
-import { MockOtpDatasource } from './mock-otp.datasource';
+import { OtpRepository, OtpEntity } from '../../../src/domain';
+import { MockOtpDatasource } from '../';
+
 export class MockOtpRepository implements OtpRepository {
   constructor(private readonly datasource: MockOtpDatasource) {}
 

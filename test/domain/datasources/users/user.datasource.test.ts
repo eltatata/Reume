@@ -1,5 +1,5 @@
 import { UserRole, RegisterUserDto } from '../../../../src/domain';
-import { MockUserDatasource } from '../../../mocks/mock-user.datasource';
+import { MockUserDatasource } from '../../../mocks';
 
 describe('UserDatasource', () => {
   let datasource: MockUserDatasource;

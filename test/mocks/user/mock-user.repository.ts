@@ -1,5 +1,9 @@
-import { UserRepository, UserEntity, RegisterUserDto } from '../../src/domain/';
-import { MockUserDatasource } from './mock-user.datasource';
+import {
+  UserRepository,
+  UserEntity,
+  RegisterUserDto,
+} from '../../../src/domain';
+import { MockUserDatasource } from '../';
 
 export class MockUserRepository implements UserRepository {
   constructor(private readonly datasource: MockUserDatasource) {}

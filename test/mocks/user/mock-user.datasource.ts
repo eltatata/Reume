@@ -1,10 +1,10 @@
+import { randomUUID } from 'crypto';
 import {
   UserDatasource,
   UserEntity,
   UserRole,
   RegisterUserDto,
-} from '../../src/domain/';
-import { randomUUID } from 'crypto';
+} from '../../../src/domain';
 
 interface UserMock {
   id: string;

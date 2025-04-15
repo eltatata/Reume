@@ -4,11 +4,13 @@ import {
   RegisterUserDto,
   CustomError,
 } from '../../../src/domain';
-import { MockUserRepository } from '../../mocks/mock-user.repository';
-import { MockUserDatasource } from '../../mocks/mock-user.datasource';
-import { MockOtpRepository } from '../../mocks/mock-otp.repository';
-import { MockOtpDatasource } from '../../mocks/mock-otp.datasource';
-import { MockEmailService } from '../../mocks/mock-email.service';
+import {
+  MockUserRepository,
+  MockUserDatasource,
+  MockOtpRepository,
+  MockOtpDatasource,
+  MockEmailService,
+} from '../../mocks';
 
 describe('RegisterUser', () => {
   let registerUser: RegisterUser;
