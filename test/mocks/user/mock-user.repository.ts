@@ -24,8 +24,8 @@ export class MockUserRepository implements UserRepository {
     return this.datasource.create(user);
   }
 
-  update(): Promise<UserEntity | null> {
-    throw new Error('Method not implemented.');
+  async update(id: string, user: RegisterUserDto): Promise<UserEntity | null> {
+    return this.datasource.update(id, user);
   }
 
   async delete(id: string): Promise<boolean> {

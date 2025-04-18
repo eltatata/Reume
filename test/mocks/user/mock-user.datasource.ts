@@ -64,8 +64,18 @@ export class MockUserDatasource implements UserDatasource {
     return UserEntity.toJSON(newUser);
   }
 
-  update(): Promise<UserEntity | null> {
-    throw new Error('Method not implemented.');
+  async update(id: string, user: RegisterUserDto): Promise<UserEntity | null> {
+    const index = this.usersMock.findIndex((u) => u.id === id);
+    if (index === -1) return null;
+
+    const updatedUser = {
+      ...this.usersMock[index],
+      ...user,
+      updatedAt: new Date(),
+    };
+
+    this.usersMock[index] = updatedUser;
+    return UserEntity.toJSON(updatedUser);
   }
 
   async delete(id: string): Promise<boolean> {
