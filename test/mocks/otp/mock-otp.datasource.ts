@@ -15,7 +15,7 @@ export class MockOtpDatasource implements OtpDatasource {
     {
       id: '1',
       userId: '1',
-      otp: '123456',
+      otp: '$2a$10$iPJpdigui8k9OUowdF5wXuXBj6uASSWPazTL9/7M7qy7wNjFY/Eqq',
       expiresAt: new Date(Date.now() + 1000 * 60 * 5),
       used: false,
       createdAt: new Date(),

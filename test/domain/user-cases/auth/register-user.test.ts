@@ -3,14 +3,14 @@ import {
   RegisterUser,
   RegisterUserDto,
   CustomError,
-} from '../../../src/domain';
+} from '../../../../src/domain';
 import {
   MockUserRepository,
   MockUserDatasource,
   MockOtpRepository,
   MockOtpDatasource,
   MockEmailService,
-} from '../../mocks';
+} from '../../../mocks';
 
 describe('RegisterUser', () => {
   let registerUser: RegisterUser;
