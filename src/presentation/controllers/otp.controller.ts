@@ -5,12 +5,16 @@ import {
   UserRepository,
   VerifyOtp,
   VerifyOtpDto,
+  ResendOtp,
+  ResendOtpDto,
+  EmailService,
 } from '../../domain';
 
 export class OtpController {
   constructor(
     private readonly otpRepository: OtpRepository,
     private readonly userRepository: UserRepository,
+    private readonly emailService: EmailService,
   ) {}
 
   verifyOtp = (req: Request, res: Response) => {
@@ -21,6 +25,19 @@ export class OtpController {
     }
 
     new VerifyOtp(this.otpRepository, this.userRepository)
+      .execute(validatedData!)
+      .then((data) => res.status(200).json(data))
+      .catch((error) => ErrorHandlerService.handleError(error, res));
+  };
+
+  resendOtp = (req: Request, res: Response) => {
+    const { errors, validatedData } = ResendOtpDto.create(req.body);
+    if (errors) {
+      res.status(400).json({ errors });
+      return;
+    }
+
+    new ResendOtp(this.otpRepository, this.userRepository, this.emailService)
       .execute(validatedData!)
       .then((data) => res.status(200).json(data))
       .catch((error) => ErrorHandlerService.handleError(error, res));
