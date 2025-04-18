@@ -9,6 +9,8 @@ import {
 } from '../../';
 
 export class ResendOtp implements ResendOtpUseCase {
+  private readonly THROTTLE_WINDOW_MS = 60 * 1000;
+
   constructor(
     private readonly otpRepository: OtpRepository,
     private readonly userRepository: UserRepository,
@@ -22,8 +24,14 @@ export class ResendOtp implements ResendOtpUseCase {
       throw CustomError.badRequest('User already verified');
 
     const existingOtp = await this.otpRepository.findByUserId(existingUser.id);
-    if (existingOtp && existingOtp.expiresAt > new Date()) {
-      throw CustomError.badRequest('OTP already sent');
+    const lastSent = existingOtp?.createdAt;
+    const now = new Date();
+
+    if (
+      lastSent &&
+      now.getTime() - lastSent.getTime() < this.THROTTLE_WINDOW_MS
+    ) {
+      throw CustomError.badRequest('Please wait before requesting a new OTP');
     }
 
     const otp = otpAdapter.generate();
