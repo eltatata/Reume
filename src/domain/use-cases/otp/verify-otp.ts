@@ -19,7 +19,6 @@ export class VerifyOtp implements VerifyOtpUseCase {
 
     if (otp.used) throw CustomError.badRequest('OTP already used');
     if (otp.expiresAt < new Date()) {
-      console.log(otp.expiresAt, new Date());
       throw CustomError.badRequest('OTP expired');
     }
 
