@@ -1,18 +1,15 @@
 import { Router } from 'express';
 import {
-  UserDatasourceImpl,
-  UserRepositoryImpl,
   OtpDatasourceImpl,
   OtpRepositoryImpl,
-  EmailServiceImpl,
+  UserDatasourceImpl,
+  UserRepositoryImpl,
 } from '../../infrastructure';
-import { AuthController } from '../';
+import { OtpController } from '../';
 
-export class AuthRoutes {
+export class OtpRoutes {
   static get routes(): Router {
     const router = Router();
-
-    const emailService = new EmailServiceImpl();
 
     const otpDatasource = new OtpDatasourceImpl();
     const otpRepository = new OtpRepositoryImpl(otpDatasource);
@@ -20,13 +17,9 @@ export class AuthRoutes {
     const userDatasource = new UserDatasourceImpl();
     const userRepository = new UserRepositoryImpl(userDatasource);
 
-    const authController = new AuthController(
-      userRepository,
-      otpRepository,
-      emailService,
-    );
+    const otpController = new OtpController(otpRepository, userRepository);
 
-    router.post('/register', authController.registerUser);
+    router.post('/verify', otpController.verifyOtp);
 
     return router;
   }

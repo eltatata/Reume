@@ -1,5 +1,10 @@
 import { prisma } from '../../data/prisma.connection';
-import { UserEntity, UserDatasource, RegisterUserDto } from '../../domain';
+import {
+  UserEntity,
+  UserDatasource,
+  RegisterUserDto,
+  UpdateUserDto,
+} from '../../domain';
 
 export class UserDatasourceImpl implements UserDatasource {
   async findByEmail(email: string): Promise<UserEntity | null> {
@@ -39,8 +44,15 @@ export class UserDatasourceImpl implements UserDatasource {
     return UserEntity.toJSON(newUser);
   }
 
-  update(): Promise<UserEntity | null> {
-    throw new Error('Method not implemented.');
+  async update(
+    id: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UserEntity | null> {
+    const updatedUser = await prisma.user.update({
+      where: { id },
+      data: updateUserDto,
+    });
+    return updatedUser ? UserEntity.toJSON(updatedUser) : null;
   }
 
   async delete(id: string): Promise<boolean> {

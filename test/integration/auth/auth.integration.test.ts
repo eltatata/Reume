@@ -16,12 +16,14 @@ describe('Auth Integration Tests', () => {
 
     server.start();
 
+    await prisma.otpVerification.deleteMany();
     await prisma.user.deleteMany();
   });
 
   afterAll(async () => {
     server.close();
 
+    await prisma.otpVerification.deleteMany();
     await prisma.user.deleteMany();
     await prisma.$disconnect();
   });

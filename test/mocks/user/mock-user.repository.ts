@@ -1,5 +1,9 @@
-import { UserRepository, UserEntity, RegisterUserDto } from '../../src/domain/';
-import { MockUserDatasource } from './mock-user.datasource';
+import {
+  UserRepository,
+  UserEntity,
+  RegisterUserDto,
+} from '../../../src/domain';
+import { MockUserDatasource } from '../';
 
 export class MockUserRepository implements UserRepository {
   constructor(private readonly datasource: MockUserDatasource) {}
@@ -20,8 +24,8 @@ export class MockUserRepository implements UserRepository {
     return this.datasource.create(user);
   }
 
-  update(): Promise<UserEntity | null> {
-    throw new Error('Method not implemented.');
+  async update(id: string, user: RegisterUserDto): Promise<UserEntity | null> {
+    return this.datasource.update(id, user);
   }
 
   async delete(id: string): Promise<boolean> {

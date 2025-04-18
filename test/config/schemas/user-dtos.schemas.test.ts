@@ -1,4 +1,4 @@
-import { registerUserSchema } from '../../../src/config/schemas/user-dtos.schemas';
+import { registerUserSchema } from '../../../src/config/';
 
 describe('registerUserSchema', () => {
   test('should validate a valid user', () => {

@@ -3,6 +3,7 @@ import {
   UserRepository,
   UserDatasource,
   RegisterUserDto,
+  UpdateUserDto,
 } from '../../domain';
 
 export class UserRepositoryImpl implements UserRepository {
@@ -24,8 +25,8 @@ export class UserRepositoryImpl implements UserRepository {
     return this.userDataSource.create(user);
   }
 
-  update(): Promise<UserEntity | null> {
-    throw new Error('Method not implemented.');
+  update(id: string, updateUserDto: UpdateUserDto): Promise<UserEntity | null> {
+    return this.userDataSource.update(id, updateUserDto);
   }
 
   delete(id: string): Promise<boolean> {

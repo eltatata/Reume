@@ -1,9 +1,19 @@
 import { Request, Response } from 'express';
 import { ErrorHandlerService } from '../';
-import { RegisterUser, RegisterUserDto, UserRepository } from '../../domain';
+import {
+  RegisterUser,
+  RegisterUserDto,
+  UserRepository,
+  OtpRepository,
+  EmailService,
+} from '../../domain';
 
 export class AuthController {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly otpRepository: OtpRepository,
+    private readonly emailService: EmailService,
+  ) {}
 
   registerUser = (req: Request, res: Response) => {
     const { errors, validatedData } = RegisterUserDto.create(req.body);
@@ -12,7 +22,7 @@ export class AuthController {
       return;
     }
 
-    new RegisterUser(this.userRepository)
+    new RegisterUser(this.userRepository, this.otpRepository, this.emailService)
       .execute(validatedData!)
       .then((data) => res.status(201).json(data))
       .catch((error) => ErrorHandlerService.handleError(error, res));
