@@ -84,6 +84,7 @@ paths:
                     description: Error message
               example:
                 message: User with this email already exists
+
   /otp/verify:
     post:
       summary: Verify OTP
@@ -93,6 +94,9 @@ paths:
         required: true
         content:
           application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyOtpRequest'
+          application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/VerifyOtpRequest'
       responses:
@@ -134,6 +138,48 @@ paths:
                     description: Error message
               example:
                 message: OTP already used
+
+  /otp/resend:
+    post:
+      summary: Resend OTP
+      description: Resends the OTP to the user
+      tags: [OTP]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResendOtpRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ResendOtpRequest'
+      responses:
+        '200':
+          description: OTP resent successfully
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message
+              example:
+                message: Invalid user email
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message
+              example:
+                message: User not found
                 
 components:
   schemas:
@@ -190,6 +236,17 @@ components:
           minLength: 6
           maxLength: 6
     
+    ResendOtpRequest:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          format: email
+          description: User's email address
+          example: john.doe@example.com
+    
     UserResponse:
       type: object
       properties:
@@ -237,3 +294,11 @@ components:
           type: string
           description: Success message
           example: OTP verified successfully
+
+    ResendOtpResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Success message
+          example: OTP resent successfully

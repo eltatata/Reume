@@ -55,7 +55,7 @@ export class MockUserDatasource implements UserDatasource {
       email: user.email,
       password: user.password,
       role: UserRole.USER,
-      verified: true,
+      verified: false,
       phone: user.phone,
       createdAt: new Date(),
     };

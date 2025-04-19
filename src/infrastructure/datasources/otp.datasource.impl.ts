@@ -18,6 +18,10 @@ export class OtpDatasourceImpl implements OtpDatasource {
       where: {
         userId,
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: 1,
     });
     return otp ? OtpEntity.toJSON(otp) : null;
   }

@@ -20,6 +20,14 @@ export class MockOtpDatasource implements OtpDatasource {
       used: false,
       createdAt: new Date(),
     },
+    {
+      id: '2',
+      userId: '2',
+      otp: '$2a$10$iPJpdigui8k9OUowdF5wXuXBj6uASSWPazTL9/7M7qy7wNjFY/Eqq',
+      expiresAt: new Date('2025-04-19T05:24:00.531Z'),
+      used: false,
+      createdAt: new Date('2025-04-19T05:09:00.531Z'),
+    },
   ];
 
   async create(userId: string, otp: string): Promise<OtpEntity> {
