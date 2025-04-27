@@ -6,7 +6,7 @@ import { UserRole } from '../../../src/domain';
 
 describe('Auth Integration Tests', () => {
   let server: Server;
-  const PORT = 3001;
+  const PORT = 3002;
 
   beforeAll(async () => {
     server = new Server({
