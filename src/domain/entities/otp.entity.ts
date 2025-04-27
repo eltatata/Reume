@@ -1,11 +1,11 @@
 export class OtpEntity {
   constructor(
-    public readonly id: string,
-    public readonly userId: string,
-    public readonly otp: string,
-    public readonly expiresAt: Date,
-    public readonly used: boolean,
-    public readonly createdAt: Date,
+    public id: string,
+    public userId: string,
+    public otp: string,
+    public expiresAt: Date,
+    public used: boolean,
+    public createdAt: Date,
   ) {}
 
   static toJSON(obj: unknown): OtpEntity {

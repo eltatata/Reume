@@ -2,14 +2,14 @@ import { UserRole } from '../';
 
 export class UserEntity {
   constructor(
-    public readonly id: string,
-    public readonly firstName: string,
-    public readonly lastName: string,
-    public readonly email: string,
-    public readonly role: UserRole,
-    public readonly verified: boolean,
-    public readonly createdAt: Date,
-    public readonly phone?: string,
+    public id: string,
+    public firstName: string,
+    public lastName: string,
+    public email: string,
+    public role: UserRole,
+    public verified: boolean,
+    public createdAt: Date,
+    public phone?: string,
   ) {}
 
   static toJSON(obj: unknown): UserEntity {
