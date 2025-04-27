@@ -1,5 +1,3 @@
-import YAML from 'yamljs';
-
-const swaggerDocument = YAML.load('./openapi.yaml');
+import swaggerDocument from '../../../swagger.json';
 
 export const swaggerSpec = swaggerDocument;
