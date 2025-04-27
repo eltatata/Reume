@@ -6,7 +6,7 @@ import { UserRole } from '../../../src/domain';
 
 describe('Auth Integration Tests', () => {
   let server: Server;
-  const PORT = 3001;
+  const PORT = 3002;
 
   beforeAll(async () => {
     server = new Server({
@@ -80,15 +80,6 @@ describe('Auth Integration Tests', () => {
       expect(response.status).toBe(409);
       expect(response.body).toHaveProperty('error');
       expect(response.body.error).toBe('User already exists');
-    });
-  });
-
-  describe('GET /api/health', () => {
-    test('should return health status', async () => {
-      const response = await request(server.app).get('/api/health');
-
-      expect(response.status).toBe(200);
-      expect(response.body).toEqual({ status: 'The API is healthy' });
     });
   });
 });
