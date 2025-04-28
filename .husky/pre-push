@@ -1,4 +1,8 @@
 npx lint-staged
+
 npm run docker:db:test
 npm run test
 npm run docker:db:test:stop
+
+docker compose up -d --build
+docker compose down 
