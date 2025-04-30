@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { envs } from '../../config';
+import { envs, logger } from '../../config';
 import { CustomError } from '../../domain';
 
 export class ErrorHandlerService {
@@ -8,7 +8,7 @@ export class ErrorHandlerService {
       return res.status(error.statusCode).json({ error: error.message });
     }
 
-    if (envs.NODE_ENV === 'development') console.error(`Error: ${error}`);
+    if (envs.NODE_ENV === 'development') logger.error(`${error}`);
     return res.status(500).json({ error: 'Internal server error' });
   }
 }
