@@ -9,7 +9,8 @@ const stream: StreamOptions = {
 
 const skip = () => envs.NODE_ENV === 'test';
 
-const customFormat = ':method :url :status - ":user-agent"';
+const customFormat =
+  ':method :url :status - ":user-agent" - :response-time ms - :res[content-length] bytes';
 
 export function morganAdapter() {
   return morgan(customFormat, { stream, skip });
