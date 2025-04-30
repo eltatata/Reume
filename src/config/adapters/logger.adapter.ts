@@ -21,7 +21,7 @@ const customLevels = {
 
 winston.addColors(customLevels.colors);
 
-const logDirectory = path.resolve(__dirname, '../../logs');
+const logDirectory = path.resolve(__dirname, '../../../logs');
 const { NODE_ENV } = process.env;
 const isDevelopment = NODE_ENV === 'development';
 const isTest = NODE_ENV === 'test';
