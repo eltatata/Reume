@@ -98,12 +98,12 @@ export const logger = winston.createLogger({
   exitOnError: false,
 });
 
-export function loggerAdapter(service: string) {
+export function loggerAdapter(location: string) {
   return {
-    log: (message: string) => logger.log('info', message, { service }),
+    log: (message: string) => logger.log('info', message, { location }),
     error: (message: string) =>
       logger.log('error', message, {
-        service,
+        location,
         at: new Date().toISOString(),
       }),
   };
