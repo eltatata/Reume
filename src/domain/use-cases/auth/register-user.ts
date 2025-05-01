@@ -1,4 +1,4 @@
-import { bcryptAdapter, otpAdapter } from '../../../config';
+import { bcryptAdapter, otpAdapter, loggerAdapter } from '../../../config';
 import {
   CustomError,
   RegisterUserDto,
@@ -9,6 +9,8 @@ import {
   OtpRepository,
 } from '../../';
 
+const logger = loggerAdapter('RegisterUserUseCase');
+
 export class RegisterUser implements RegisterUserUseCase {
   constructor(
     private readonly userRepository: UserRepository,
@@ -17,6 +19,10 @@ export class RegisterUser implements RegisterUserUseCase {
   ) {}
 
   async execute(registerUserDto: RegisterUserDto): Promise<UserEntity> {
+    logger.log(
+      `Starting user registration process for: ${registerUserDto.email}`,
+    );
+
     const existingUser = await this.userRepository.findByEmail(
       registerUserDto.email,
     );
@@ -28,17 +34,20 @@ export class RegisterUser implements RegisterUserUseCase {
     };
 
     const user = await this.userRepository.create(userWithHashedPassword);
+    logger.log(`User created successfully: ${user.id} - ${user.email}`);
 
     const otp = otpAdapter.generate();
     const hashedOtp = bcryptAdapter.hash(otp);
 
     await this.otpRepository.create(user.id, hashedOtp);
+    logger.log(`Otp generated and stored for user: ${user.id}`);
 
     await this.emailService.sendVerificationEmail(
       user.email,
       `${user.firstName} ${user.lastName}`,
       otp,
     );
+    logger.log(`Verification email sent to: ${user.email}`);
 
     return user;
   }
