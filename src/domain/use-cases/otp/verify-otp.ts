@@ -1,4 +1,4 @@
-import { bcryptAdapter } from '../../../config';
+import { bcryptAdapter, loggerAdapter } from '../../../config';
 import {
   CustomError,
   VerifyOtpDto,
@@ -7,6 +7,8 @@ import {
   UserRepository,
 } from '../../';
 
+const logger = loggerAdapter('VerifyOtpUseCase');
+
 export class VerifyOtp implements VerifyOtpUseCase {
   constructor(
     private readonly otpRepository: OtpRepository,
@@ -14,6 +16,8 @@ export class VerifyOtp implements VerifyOtpUseCase {
   ) {}
 
   async execute(verifyOtpDto: VerifyOtpDto): Promise<void> {
+    logger.log(`Starting OTP verification process for: ${verifyOtpDto.userId}`);
+
     const otp = await this.otpRepository.findByUserId(verifyOtpDto.userId);
     if (!otp) throw CustomError.notFound('OTP not found');
 
@@ -28,6 +32,8 @@ export class VerifyOtp implements VerifyOtpUseCase {
     await this.userRepository.update(verifyOtpDto.userId, {
       verified: true,
     });
+
+    logger.log(`User verified successfully: ${verifyOtpDto.userId}`);
 
     await this.otpRepository.markAsUsed(otp.id);
   }
