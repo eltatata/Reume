@@ -1,6 +1,5 @@
 export * from './errors/custom.error';
 export * from './interfaces/validation/validation.interfaces';
-export * from './interfaces/operations/operations.interfaces';
 export * from './interfaces/user/user.interfaces';
 export * from './interfaces/auth/register-user.interfaces';
 export * from './interfaces/otp/otp.interfaces';
