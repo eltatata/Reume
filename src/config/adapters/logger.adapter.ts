@@ -61,7 +61,7 @@ if (isProduction) {
       ),
     }),
     new DailyRotateFile({
-      level: 'info',
+      level: 'http',
       dirname: logDirectory,
       filename: 'app-%DATE%.log',
       datePattern: 'YYYY-MM-DD',
