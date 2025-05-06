@@ -14,7 +14,8 @@ describe('UserEntity', () => {
       phone: '+1234567890',
     };
 
-    const result = UserEntity.toJSON(user);
+    const result = UserEntity.toEntity(user);
+    delete result.password;
 
     expect(result).toEqual({
       id: '123',

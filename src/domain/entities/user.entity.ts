@@ -10,11 +10,21 @@ export class UserEntity {
     public verified: boolean,
     public createdAt: Date,
     public phone?: string,
+    public password?: string,
   ) {}
 
-  static toJSON(obj: unknown): UserEntity {
-    const { id, firstName, lastName, email, role, verified, createdAt, phone } =
-      obj as UserEntity;
+  static toEntity(obj: unknown): UserEntity {
+    const {
+      id,
+      firstName,
+      lastName,
+      email,
+      role,
+      verified,
+      createdAt,
+      phone,
+      password,
+    } = obj as UserEntity;
 
     return {
       id,
@@ -25,6 +35,7 @@ export class UserEntity {
       verified,
       createdAt,
       phone,
+      password,
     };
   }
 }

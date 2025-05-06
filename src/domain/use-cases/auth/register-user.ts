@@ -49,6 +49,8 @@ export class RegisterUser implements RegisterUserUseCase {
     );
     logger.log(`Verification email sent to: ${user.email}`);
 
+    delete user.password;
+
     return user;
   }
 }

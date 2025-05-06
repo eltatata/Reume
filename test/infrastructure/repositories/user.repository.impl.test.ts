@@ -61,7 +61,9 @@ describe('UserRepositoryImpl', () => {
 
   describe('findByEmail', () => {
     test('should return a user when a valid email is provided', async () => {
-      userDatasource.findByEmail.mockResolvedValue(UserEntity.toJSON(mockUser));
+      userDatasource.findByEmail.mockResolvedValue(
+        UserEntity.toEntity(mockUser),
+      );
 
       const result = await userRepository.findByEmail('john.doe@example.com');
 
@@ -112,7 +114,7 @@ describe('UserRepositoryImpl', () => {
         firstName: userData.firstname,
         lastName: userData.lastname,
       };
-      userDatasource.create.mockResolvedValue(UserEntity.toJSON(createdUser));
+      userDatasource.create.mockResolvedValue(UserEntity.toEntity(createdUser));
 
       const result = await userRepository.create(userData);
 

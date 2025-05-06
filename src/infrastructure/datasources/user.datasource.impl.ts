@@ -13,7 +13,7 @@ export class UserDatasourceImpl implements UserDatasource {
         email,
       },
     });
-    return user ? UserEntity.toJSON(user) : null;
+    return user ? UserEntity.toEntity(user) : null;
   }
 
   async findById(id: string): Promise<UserEntity | null> {
@@ -22,12 +22,12 @@ export class UserDatasourceImpl implements UserDatasource {
         id,
       },
     });
-    return user ? UserEntity.toJSON(user) : null;
+    return user ? UserEntity.toEntity(user) : null;
   }
 
   async findAll(): Promise<UserEntity[]> {
     const users = await prisma.user.findMany();
-    return users.map((user) => UserEntity.toJSON(user));
+    return users.map((user) => UserEntity.toEntity(user));
   }
 
   async create(user: RegisterUserDto): Promise<UserEntity> {
@@ -41,7 +41,7 @@ export class UserDatasourceImpl implements UserDatasource {
         phone: user.phone,
       },
     });
-    return UserEntity.toJSON(newUser);
+    return UserEntity.toEntity(newUser);
   }
 
   async update(
@@ -52,7 +52,7 @@ export class UserDatasourceImpl implements UserDatasource {
       where: { id },
       data: updateUserDto,
     });
-    return updatedUser ? UserEntity.toJSON(updatedUser) : null;
+    return updatedUser ? UserEntity.toEntity(updatedUser) : null;
   }
 
   async delete(id: string): Promise<boolean> {

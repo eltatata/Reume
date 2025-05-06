@@ -51,6 +51,7 @@ describe('Auth Integration Tests', () => {
       expect(response.body.verified).toBe(false);
       expect(response.body).toHaveProperty('createdAt');
       expect(response.body.phone).toBe(validUserData.phone);
+      expect(response.body).not.toHaveProperty('password');
     });
 
     test('should return validation errors for invalid data', async () => {

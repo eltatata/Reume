@@ -8,7 +8,7 @@ export class OtpEntity {
     public createdAt: Date,
   ) {}
 
-  static toJSON(obj: unknown): OtpEntity {
+  static toEntity(obj: unknown): OtpEntity {
     const { id, userId, otp, expiresAt, used, createdAt } = obj as OtpEntity;
 
     return {
