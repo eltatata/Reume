@@ -3,7 +3,7 @@ import { envs } from './envs.adapter';
 
 const JWT_SECRET = envs.JWT_SECRET;
 
-export class JwtAdapter {
+export class jwtAdapter {
   static generateToken(payload: {
     [key: string]: unknown;
   }): Promise<string | null> {

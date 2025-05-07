@@ -1,4 +1,4 @@
-import { bcryptAdapter, JwtAdapter, loggerAdapter } from '../../../config';
+import { bcryptAdapter, jwtAdapter, loggerAdapter } from '../../../config';
 import {
   CustomError,
   LoginUserDto,
@@ -25,7 +25,7 @@ export class LoginUser implements LoginUserUseCase {
     );
     if (!isPasswordValid) throw CustomError.unauthorized('Invalid password');
 
-    const token = await JwtAdapter.generateToken({
+    const token = await jwtAdapter.generateToken({
       id: user.id,
       role: user.role,
     });
