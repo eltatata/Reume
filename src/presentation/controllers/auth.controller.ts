@@ -3,6 +3,8 @@ import { ErrorHandlerService } from '../';
 import {
   RegisterUser,
   RegisterUserDto,
+  LoginUser,
+  LoginUserDto,
   UserRepository,
   OtpRepository,
   EmailService,
@@ -25,6 +27,19 @@ export class AuthController {
     new RegisterUser(this.userRepository, this.otpRepository, this.emailService)
       .execute(validatedData!)
       .then((data) => res.status(201).json(data))
+      .catch((error) => ErrorHandlerService.handleError(error, res));
+  };
+
+  loginUser = (req: Request, res: Response) => {
+    const { errors, validatedData } = LoginUserDto.create(req.body);
+    if (errors) {
+      res.status(400).json({ errors });
+      return;
+    }
+
+    new LoginUser(this.userRepository)
+      .execute(validatedData!)
+      .then((data) => res.status(200).json(data))
       .catch((error) => ErrorHandlerService.handleError(error, res));
   };
 }
