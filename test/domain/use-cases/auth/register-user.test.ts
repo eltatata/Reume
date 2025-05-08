@@ -58,6 +58,7 @@ describe('RegisterUser', () => {
       expect(createdUser.email).toBe('jane.doe@example.com');
       expect(createdUser.phone).toBe('+1234567890');
       expect(createdUser.role).toBe(UserRole.USER);
+      expect(createdUser.password).toBeUndefined();
     });
 
     test('should throw an error when the user already exists', async () => {

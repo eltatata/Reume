@@ -8,4 +8,5 @@ export const envs = {
   POSTGRES_PASSWORD: get('POSTGRES_PASSWORD').required().asString(),
   POSTGRES_DB: get('POSTGRES_DB').required().asString(),
   RESEND_API_KEY: get('RESEND_API_KEY').required().asString(),
+  JWT_SECRET: get('JWT_SECRET').required().asString(),
 };

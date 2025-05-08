@@ -10,7 +10,7 @@ export class OtpDatasourceImpl implements OtpDatasource {
         expiresAt: new Date(Date.now() + 15 * 60 * 1000),
       },
     });
-    return OtpEntity.toJSON(newOtp);
+    return OtpEntity.toEntity(newOtp);
   }
 
   async findByUserId(userId: string): Promise<OtpEntity | null> {
@@ -23,7 +23,7 @@ export class OtpDatasourceImpl implements OtpDatasource {
       },
       take: 1,
     });
-    return otp ? OtpEntity.toJSON(otp) : null;
+    return otp ? OtpEntity.toEntity(otp) : null;
   }
 
   async markAsUsed(otpId: string): Promise<void> {

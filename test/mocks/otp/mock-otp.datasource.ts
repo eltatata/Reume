@@ -41,12 +41,12 @@ export class MockOtpDatasource implements OtpDatasource {
     };
 
     this.otpsMock.push(newOtp);
-    return OtpEntity.toJSON(newOtp);
+    return OtpEntity.toEntity(newOtp);
   }
 
   async findByUserId(userId: string): Promise<OtpEntity | null> {
     const otp = this.otpsMock.find((otp) => otp.userId === userId);
-    return otp ? OtpEntity.toJSON(otp) : null;
+    return otp ? OtpEntity.toEntity(otp) : null;
   }
 
   async markAsUsed(otpId: string): Promise<void> {

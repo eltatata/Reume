@@ -25,7 +25,7 @@ export class MockUserDatasource implements UserDatasource {
       firstName: 'John',
       lastName: 'Doe',
       email: 'john.doe@example.com',
-      password: 'password123',
+      password: '$2a$10$.aVz3V/OOUEAHrp7zWhWw.ZA5GHxAHYYts5sfn1A6HHUpiQrruOwe',
       role: UserRole.USER,
       verified: true,
       phone: '+1234567890',
@@ -35,16 +35,16 @@ export class MockUserDatasource implements UserDatasource {
 
   async findByEmail(email: string): Promise<UserEntity | null> {
     const user = this.usersMock.find((user) => user.email === email);
-    return user ? UserEntity.toJSON(user) : null;
+    return user ? UserEntity.toEntity(user) : null;
   }
 
   async findById(id: string): Promise<UserEntity | null> {
     const user = this.usersMock.find((user) => user.id === id);
-    return user ? UserEntity.toJSON(user) : null;
+    return user ? UserEntity.toEntity(user) : null;
   }
 
   async findAll(): Promise<UserEntity[]> {
-    return this.usersMock.map((user) => UserEntity.toJSON(user));
+    return this.usersMock.map((user) => UserEntity.toEntity(user));
   }
 
   async create(user: RegisterUserDto): Promise<UserEntity> {
@@ -61,7 +61,7 @@ export class MockUserDatasource implements UserDatasource {
     };
 
     this.usersMock.push(newUser);
-    return UserEntity.toJSON(newUser);
+    return UserEntity.toEntity(newUser);
   }
 
   async update(id: string, user: RegisterUserDto): Promise<UserEntity | null> {
@@ -75,7 +75,7 @@ export class MockUserDatasource implements UserDatasource {
     };
 
     this.usersMock[index] = updatedUser;
-    return UserEntity.toJSON(updatedUser);
+    return UserEntity.toEntity(updatedUser);
   }
 
   async delete(id: string): Promise<boolean> {
