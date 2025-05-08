@@ -1,6 +1,5 @@
 import request from 'supertest';
-import { Server } from '../../../src/presentation/server';
-import { AppRoutes } from '../../../src/presentation/routes';
+import { Server, AppRoutes } from '../../../src/presentation';
 
 describe('Health Integration Tests', () => {
   let server: Server;

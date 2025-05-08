@@ -1,6 +1,5 @@
 import request from 'supertest';
-import { Server } from '../../../src/presentation/server';
-import { AppRoutes } from '../../../src/presentation/routes';
+import { Server, AppRoutes } from '../../../src/presentation';
 import { prisma } from '../../../src/data/prisma.connection';
 import { UserRole } from '../../../src/domain';
 
