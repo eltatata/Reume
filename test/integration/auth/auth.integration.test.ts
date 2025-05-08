@@ -52,6 +52,11 @@ describe('Auth Integration Tests', () => {
       expect(response.body).toHaveProperty('createdAt');
       expect(response.body.phone).toBe(validUserData.phone);
       expect(response.body).not.toHaveProperty('password');
+
+      await prisma.user.update({
+        where: { id: response.body.id },
+        data: { verified: true },
+      });
     });
 
     test('should return validation errors for invalid data', async () => {
@@ -81,6 +86,40 @@ describe('Auth Integration Tests', () => {
       expect(response.status).toBe(409);
       expect(response.body).toHaveProperty('error');
       expect(response.body.error).toBe('User already exists');
+    });
+  });
+
+  describe('POST /api/auth/login', () => {
+    const validLoginData = {
+      email: 'john.doe@example.com',
+      password: 'mySecurePassword123!',
+    };
+
+    test('should login a user successfully', async () => {
+      const response = await request(server.app)
+        .post('/api/auth/login')
+        .send(validLoginData);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('token');
+      expect(response.body.user.email).toBe(validLoginData.email);
+      expect(response.body.user.verified).toBe(true); // Verify that logged in user has verified=true
+    });
+
+    test('should return error for invalid credentials', async () => {
+      const invalidLoginData = {
+        email: '',
+        password: 'wrongPassword',
+      };
+
+      const response = await request(server.app)
+        .post('/api/auth/login')
+        .send(invalidLoginData);
+
+      expect(response.status).toBe(400);
+      expect(response.body).toHaveProperty('errors');
+      expect(Array.isArray(response.body.errors)).toBe(true);
+      expect(response.body.errors.length).toBeGreaterThan(0);
     });
   });
 });
