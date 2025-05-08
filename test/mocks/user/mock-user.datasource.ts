@@ -25,7 +25,7 @@ export class MockUserDatasource implements UserDatasource {
       firstName: 'John',
       lastName: 'Doe',
       email: 'john.doe@example.com',
-      password: 'password123',
+      password: '$2a$10$.aVz3V/OOUEAHrp7zWhWw.ZA5GHxAHYYts5sfn1A6HHUpiQrruOwe',
       role: UserRole.USER,
       verified: true,
       phone: '+1234567890',
