@@ -102,7 +102,7 @@ describe('Auth Integration Tests', () => {
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('token');
       expect(response.body.user.email).toBe(validLoginData.email);
-      expect(response.body.user.verified).toBe(true); // Verify that logged in user has verified=true
+      expect(response.body.user.verified).toBe(true);
     });
 
     test('should return error for invalid credentials', async () => {
