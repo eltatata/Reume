@@ -9,6 +9,7 @@ const config: Config = {
   preset: 'ts-jest',
   setupFiles: ['<rootDir>/set-up-test.ts'],
   testEnvironment: 'jest-environment-node',
+  maxWorkers: 1,
 };
 
 export default config;
