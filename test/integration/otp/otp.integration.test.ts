@@ -55,7 +55,6 @@ describe('OTP Integration Tests', () => {
 
   afterAll(async () => {
     sendSpy.mockRestore();
-    server.close();
 
     server.close();
 
