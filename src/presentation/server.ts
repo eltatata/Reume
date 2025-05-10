@@ -1,7 +1,6 @@
 import express, { Router, Request, Response, NextFunction } from 'express';
-import morgan from 'morgan';
 import swaggerUi from 'swagger-ui-express';
-import { envs, swaggerSpec } from '../config';
+import { envs, swaggerSpec, logger, morganAdapter } from '../config';
 import { ErrorHandlerService } from './';
 
 interface Options {
@@ -25,9 +24,10 @@ export class Server {
 
   start() {
     this.app.use(express.json());
-    if (envs.NODE_ENV === 'development') {
-      this.app.use(morgan('dev'));
-    }
+    this.app.use(express.urlencoded({ extended: true }));
+
+    this.app.use(morganAdapter());
+
     this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
     this.app.use(this.routes);
@@ -40,11 +40,13 @@ export class Server {
     );
 
     this.serverListener = this.app.listen(this.port, () => {
-      console.log(
-        envs.NODE_ENV === 'development'
-          ? `Server running on http://localhost:${this.port}`
-          : `Server running`,
-      );
+      if (envs.NODE_ENV !== 'test') {
+        logger.info(
+          envs.NODE_ENV === 'development'
+            ? `Server running at http://localhost:${this.port}`
+            : `Server running on port ${this.port}`,
+        );
+      }
     });
   }
 

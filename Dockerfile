@@ -10,6 +10,7 @@ RUN npm ci
 
 COPY . .
 
+RUN npx prisma generate
 RUN npm run build
 
 # Production stage
@@ -20,6 +21,8 @@ WORKDIR /app
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/swagger.json ./
+COPY --from=builder /app/generated ./generated
 
 EXPOSE 3000
 

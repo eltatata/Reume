@@ -1,19 +1,13 @@
 import { Router } from 'express';
+import { AuthRoutes, OtpRoutes } from './';
 
 export class AppRoutes {
   static get routes() {
     const router = Router();
 
-    /**
-     * @swagger
-     * /api/health:
-     *   get:
-     *     summary: Verifies the health of the API.
-     *     description: Verifies the health of the API.
-     *     responses:
-     *       200:
-     *         description: API is healthy.
-     */
+    router.use('/api/auth', AuthRoutes.routes);
+    router.use('/api/otp', OtpRoutes.routes);
+
     router.get('/api/health', (req, res) => {
       res.json({ status: 'The API is healthy' });
     });
