@@ -7,7 +7,7 @@ export const createScheduleSchema: z.ZodType<CreateScheduleDTO> = z
       .string()
       .trim()
       .min(5, 'Title is required')
-      .max(200, 'Title must be at most 100 characters long'),
+      .max(200, 'Title must be at most 200 characters long'),
     day: z.nativeEnum(WeekDay, {
       errorMap: () => ({ message: 'Invalid day of the week' }),
     }),
