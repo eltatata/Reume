@@ -9,3 +9,4 @@ export * from './swagger/swagger.config';
 export * from './schemas/auth-dtos.schemas';
 export * from './schemas/otp-dtos-schemas';
 export * from './schemas/user-dtos.schemas';
+export * from './schemas/schedule-dtos.schemas';
