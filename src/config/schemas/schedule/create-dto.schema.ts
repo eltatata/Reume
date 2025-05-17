@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CreateScheduleDTO, WeekDay } from '../../domain/';
+import { CreateScheduleDTO, WeekDay } from '../../../domain';
 
 export const createScheduleSchema: z.ZodType<CreateScheduleDTO> = z
   .object({

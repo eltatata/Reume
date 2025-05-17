@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { LoginUserDto, RegisterUserDto } from '../../domain';
+import { RegisterUserDto } from '../../../domain';
 
 export const registerUserSchema: z.ZodType<RegisterUserDto> = z.object({
   firstname: z
@@ -30,12 +30,4 @@ export const registerUserSchema: z.ZodType<RegisterUserDto> = z.object({
     .trim()
     .regex(/^\+?[0-9]{6,15}$/, 'Invalid phone number format')
     .optional(),
-});
-
-export const loginUserSchema: z.ZodType<LoginUserDto> = z.object({
-  email: z.string().trim().email('Invalid email format'),
-  password: z
-    .string()
-    .trim()
-    .min(5, 'Password must be at least 5 characters long'),
 });
