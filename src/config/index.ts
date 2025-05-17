@@ -8,6 +8,7 @@ export * from './adapters/jwt.adapter';
 export * from './swagger/swagger.config';
 export * from './schemas/auth/login-dto.schema';
 export * from './schemas/auth/register-dto.schema';
-export * from './schemas/otp-dtos-schemas';
+export * from './schemas/otp/resend-dto.schema';
+export * from './schemas/otp/verify-dto.schema';
 export * from './schemas/user-dtos.schemas';
 export * from './schemas/schedule-dtos.schemas';
