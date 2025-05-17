@@ -6,7 +6,7 @@ export const createScheduleSchema: z.ZodType<CreateScheduleDTO> = z
     title: z
       .string()
       .trim()
-      .min(5, 'Title is required')
+      .min(5, 'Title must be at least 5 characters long')
       .max(200, 'Title must be at most 200 characters long'),
     day: z.nativeEnum(WeekDay, {
       errorMap: () => ({ message: 'Invalid day of the week' }),
@@ -91,16 +91,5 @@ export const createScheduleSchema: z.ZodType<CreateScheduleDTO> = z
     {
       message: 'Times must be between 6:00 AM and 6:00 PM',
       path: ['startTime'],
-    },
-  )
-  .refine(
-    (data) => {
-      const diffMs = data.endTime.getTime() - data.startTime.getTime();
-      const diffMinutes = diffMs / (1000 * 60);
-      return diffMinutes % 15 === 0;
-    },
-    {
-      message: 'Schedule duration must be a multiple of 15 minutes',
-      path: ['endTime'],
     },
   );
