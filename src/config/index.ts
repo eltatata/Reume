@@ -10,5 +10,5 @@ export * from './schemas/auth/login-dto.schema';
 export * from './schemas/auth/register-dto.schema';
 export * from './schemas/otp/resend-dto.schema';
 export * from './schemas/otp/verify-dto.schema';
-export * from './schemas/user-dtos.schemas';
+export * from './schemas/user/update-dto.schema';
 export * from './schemas/schedule/create-dto.schema';

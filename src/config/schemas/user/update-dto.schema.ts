@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { UpdateUserDto } from '../../domain';
+import { UpdateUserDto } from '../../../domain';
 
 export const updateUserSchema: z.ZodType<UpdateUserDto> = z.object({
   firstname: z.string().trim().optional(),
