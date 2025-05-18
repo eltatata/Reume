@@ -30,15 +30,15 @@ export class UserDatasourceImpl implements UserDatasource {
     return users.map((user) => UserEntity.toEntity(user));
   }
 
-  async create(user: RegisterUserDto): Promise<UserEntity> {
+  async create(registerUserDto: RegisterUserDto): Promise<UserEntity> {
     const newUser = await prisma.user.create({
       data: {
-        firstName: user.firstname,
-        lastName: user.lastname,
-        email: user.email,
-        password: user.password,
+        firstName: registerUserDto.firstname,
+        lastName: registerUserDto.lastname,
+        email: registerUserDto.email,
+        password: registerUserDto.password,
         role: 'USER',
-        phone: user.phone,
+        phone: registerUserDto.phone,
       },
     });
     return UserEntity.toEntity(newUser);
