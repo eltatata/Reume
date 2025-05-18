@@ -21,8 +21,8 @@ export class UserRepositoryImpl implements UserRepository {
     return this.userDataSource.findAll();
   }
 
-  create(user: RegisterUserDto): Promise<UserEntity> {
-    return this.userDataSource.create(user);
+  create(registerUserDto: RegisterUserDto): Promise<UserEntity> {
+    return this.userDataSource.create(registerUserDto);
   }
 
   update(id: string, updateUserDto: UpdateUserDto): Promise<UserEntity | null> {
