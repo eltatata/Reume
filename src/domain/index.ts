@@ -12,6 +12,7 @@ export * from './dtos/user/update-user';
 export * from './dtos/otp/verify-otp';
 export * from './dtos/otp/resend-otp';
 export * from './dtos/schedule/create-schedule';
+export * from './dtos/schedule/update-schedule';
 export * from './entities/user.entity';
 export * from './entities/otp.entity';
 export * from './datasources/user.datasource';

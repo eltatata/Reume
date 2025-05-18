@@ -12,3 +12,4 @@ export * from './schemas/otp/resend-dto.schema';
 export * from './schemas/otp/verify-dto.schema';
 export * from './schemas/user/update-dto.schema';
 export * from './schemas/schedule/create-dto.schema';
+export * from './schemas/schedule/update-dto.schema';
