@@ -31,6 +31,7 @@ model Schedule {
   title     String    @db.VarChar(100)
   day       WeekDay
   startTime DateTime  @db.Time()
+  endTime   DateTime  @db.Time()
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   user      User      @relation(fields: [userId], references: [id])
