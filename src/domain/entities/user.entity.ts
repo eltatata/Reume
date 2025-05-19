@@ -26,7 +26,7 @@ export class UserEntity {
       password,
     } = obj as UserEntity;
 
-    return {
+    return new UserEntity(
       id,
       firstName,
       lastName,
@@ -36,6 +36,6 @@ export class UserEntity {
       createdAt,
       phone,
       password,
-    };
+    );
   }
 }
