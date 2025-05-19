@@ -1,4 +1,5 @@
-import { VerifyOtp, VerifyOtpDto, CustomError } from '../../../../src/domain';
+import { VerifyOtpDto, CustomError } from '../../../../src/domain';
+import { VerifyOtp } from '../../../../src/application';
 import {
   MockUserRepository,
   MockUserDatasource,

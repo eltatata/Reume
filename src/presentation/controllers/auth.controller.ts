@@ -1,14 +1,13 @@
 import { Request, Response } from 'express';
 import { ErrorHandlerService } from '../';
 import {
-  RegisterUser,
   RegisterUserDto,
-  LoginUser,
   LoginUserDto,
   UserRepository,
   OtpRepository,
   EmailService,
 } from '../../domain';
+import { RegisterUser, LoginUser } from '../../application';
 
 export class AuthController {
   constructor(

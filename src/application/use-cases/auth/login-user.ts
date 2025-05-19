@@ -5,7 +5,7 @@ import {
   LoginUserUseCase,
   LoginUserUseCaseResponse,
   UserRepository,
-} from '../..';
+} from '../../../domain';
 
 const logger = loggerAdapter('LoginUserUseCase');
 

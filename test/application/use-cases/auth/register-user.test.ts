@@ -1,9 +1,5 @@
-import {
-  UserRole,
-  RegisterUser,
-  RegisterUserDto,
-  CustomError,
-} from '../../../../src/domain';
+import { UserRole, RegisterUserDto, CustomError } from '../../../../src/domain';
+import { RegisterUser } from '../../../../src/application';
 import {
   MockUserRepository,
   MockUserDatasource,
