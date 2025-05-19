@@ -11,13 +11,6 @@ export class OtpEntity {
   static toEntity(obj: unknown): OtpEntity {
     const { id, userId, otp, expiresAt, used, createdAt } = obj as OtpEntity;
 
-    return {
-      id,
-      userId,
-      otp,
-      expiresAt,
-      used,
-      createdAt,
-    };
+    return new OtpEntity(id, userId, otp, expiresAt, used, createdAt);
   }
 }
