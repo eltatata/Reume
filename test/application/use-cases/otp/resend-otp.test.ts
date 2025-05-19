@@ -1,4 +1,5 @@
-import { ResendOtp, ResendOtpDto, CustomError } from '../../../../src/domain';
+import { ResendOtpDto, CustomError } from '../../../../src/domain';
+import { ResendOtp } from '../../../../src/application';
 import {
   MockUserRepository,
   MockUserDatasource,

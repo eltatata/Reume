@@ -7,7 +7,7 @@ import {
   UserRepository,
   EmailService,
   OtpRepository,
-} from '../../';
+} from '../../../domain';
 
 const logger = loggerAdapter('RegisterUserUseCase');
 

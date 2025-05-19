@@ -3,12 +3,11 @@ import { ErrorHandlerService } from '../';
 import {
   OtpRepository,
   UserRepository,
-  VerifyOtp,
   VerifyOtpDto,
-  ResendOtp,
   ResendOtpDto,
   EmailService,
 } from '../../domain';
+import { VerifyOtp, ResendOtp } from '../../application';
 
 export class OtpController {
   constructor(

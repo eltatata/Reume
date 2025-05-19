@@ -6,7 +6,7 @@ import {
   EmailService,
   UserRepository,
   ResendOtpDto,
-} from '../../';
+} from '../../../domain';
 
 const logger = loggerAdapter('ResendOtpUseCase');
 

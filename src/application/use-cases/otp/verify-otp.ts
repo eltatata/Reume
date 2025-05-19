@@ -5,7 +5,7 @@ import {
   VerifyOtpUseCase,
   OtpRepository,
   UserRepository,
-} from '../../';
+} from '../../../domain';
 
 const logger = loggerAdapter('VerifyOtpUseCase');
 

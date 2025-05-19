@@ -22,8 +22,4 @@ export * from './datasources/schedule.datasource';
 export * from './repositories/user.repository';
 export * from './repositories/otp.repository';
 export * from './repositories/schedule.repository';
-export * from './use-cases/auth/register-user';
-export * from './use-cases/auth/login-user';
-export * from './use-cases/otp/verify-otp';
-export * from './use-cases/otp/resend-otp';
 export * from './services/email.service';

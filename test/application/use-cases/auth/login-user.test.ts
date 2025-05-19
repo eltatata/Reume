@@ -1,9 +1,5 @@
-import {
-  LoginUser,
-  LoginUserDto,
-  CustomError,
-  UserRole,
-} from '../../../../src/domain';
+import { LoginUserDto, CustomError, UserRole } from '../../../../src/domain';
+import { LoginUser } from '../../../../src/application';
 import { MockUserRepository, MockUserDatasource } from '../../../mocks';
 
 describe('LoginUser', () => {
