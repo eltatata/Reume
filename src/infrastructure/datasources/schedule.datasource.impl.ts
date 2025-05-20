@@ -14,8 +14,12 @@ export class ScheduleDatasourceImpl implements ScheduleDatasource {
     return schedule ? ScheduleEntity.toEntity(schedule) : null;
   }
 
-  async findAll(): Promise<ScheduleEntity[]> {
-    const schedules = await prisma.schedule.findMany();
+  async findAll(userId?: string): Promise<ScheduleEntity[]> {
+    const schedules = await prisma.schedule.findMany({
+      where: {
+        userId,
+      },
+    });
     return schedules.map(ScheduleEntity.toEntity);
   }
 
@@ -26,10 +30,7 @@ export class ScheduleDatasourceImpl implements ScheduleDatasource {
     const schedule = await prisma.schedule.create({
       data: {
         userId,
-        title: createScheduleDto.title,
-        day: createScheduleDto.day,
-        startTime: createScheduleDto.startTime,
-        endTime: createScheduleDto.endTime,
+        ...createScheduleDto,
       },
     });
     return ScheduleEntity.toEntity(schedule);
