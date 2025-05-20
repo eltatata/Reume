@@ -14,21 +14,33 @@ export class AuthMiddleware {
     next: NextFunction,
   ) {
     let token = req.headers.authorization;
-    if (!token) return res.status(401).json({ message: 'Token not provided' });
+    if (!token) {
+      res.status(401).json({ message: 'Unauthorized access' });
+      return;
+    }
 
     token = token.split('Bearer ').at(1);
-    if (!token) return res.status(401).json({ message: 'Invalid token' });
+    if (!token) {
+      res.status(401).json({ message: 'Unauthorized access' });
+      return;
+    }
 
     try {
       const payload = await jwtAdapter.verifyToken<{ id: string }>(token);
-      if (!payload) return res.status(401).json({ message: 'Invalid token' });
+      if (!payload) {
+        res.status(401).json({ message: 'Unauthorized access' });
+        return;
+      }
 
       const user = await prisma.user.findUnique({
         where: {
           id: payload.id,
         },
       });
-      if (!user) return res.status(401).json({ message: 'Invalid token' });
+      if (!user) {
+        res.status(401).json({ message: 'Unauthorized access' });
+        return;
+      }
 
       req.user = { id: user.id };
 
