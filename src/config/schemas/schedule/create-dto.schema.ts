@@ -11,6 +11,21 @@ export const createScheduleSchema: z.ZodType<CreateScheduleDTO> = z
     day: z.nativeEnum(WeekDay, {
       errorMap: () => ({ message: 'Invalid day of the week' }),
     }),
+    date: z
+      .string()
+      .trim()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format. Use YYYY-MM-DD')
+      .transform((dateStr) => {
+        const [year, month, day] = dateStr.split('-').map(Number);
+        const date = new Date(year, month - 1, day);
+        if (isNaN(date.getTime())) {
+          throw new Error('Invalid date');
+        }
+        return date;
+      })
+      .refine((date) => date >= new Date(), {
+        message: 'Date must be today or in the future',
+      }),
     startTime: z
       .string()
       .trim()
