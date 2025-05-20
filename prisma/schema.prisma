@@ -30,6 +30,7 @@ model Schedule {
   userId    String    @db.Uuid
   title     String    @db.VarChar(100)
   day       WeekDay
+  date      DateTime  @db.Date()
   startTime DateTime  @db.Time()
   endTime   DateTime  @db.Time()
   createdAt DateTime  @default(now())
