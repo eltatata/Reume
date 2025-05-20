@@ -23,6 +23,10 @@
     {
       "name": "OTP",
       "description": "OTP endpoints"
+    },
+    {
+      "name": "Schedule",
+      "description": "Schedule endpoints"
     }
   ],
   "paths": {
@@ -372,6 +376,123 @@
           }
         }
       }
+    },
+    "/schedule/": {
+      "post": {
+        "summary": "Create a new schedule",
+        "description": "Creates a new schedule",
+        "tags": ["Schedule"],
+        "security": [
+          { "bearerAuth": [] }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateScheduleRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateScheduleRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Schedule created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScheduleResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message"
+                    }
+                  },
+                  "example": {
+                    "message": "Invalid schedule data"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message"
+                    }
+                  },
+                  "example": {
+                    "message": "Unauthorized access"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Get all schedules",
+        "description": "Retrieves all schedules",
+        "tags": ["Schedule"],
+        "security": [
+          { "bearerAuth": [] }
+        ],
+        "responses": {
+          "200": {
+            "description": "Schedules retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ScheduleResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message"
+                    }
+                  },
+                  "example": {
+                    "message": "Unauthorized access"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -462,6 +583,41 @@
           }
         }
       },
+      "CreateScheduleRequest": {
+        "type": "object",
+        "required": ["title", "day", "startTime", "endTime"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Title of the schedule",
+            "example": "Meeting with client"
+          },
+          "day": {
+            "type": "string",
+            "description": "Day of the week for the schedule",
+            "enum": ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"],
+            "example": "MONDAY"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "description": "Date of the schedule",
+            "example": "2024-03-30"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "time",
+            "description": "Start time of the schedule",
+            "example": "02:00 PM"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "time",
+            "description": "End time of the schedule",
+            "example": "03:00 PM"
+          }
+        }
+      },
       "UserResponse": {
         "type": "object",
         "properties": {
@@ -544,6 +700,53 @@
             "example": "OTP resent successfully"
           }
         }
+      },
+      "ScheduleResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Schedule's unique identifier",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "title": {
+            "type": "string",
+            "description": "Title of the schedule",
+            "example": "Meeting with client"
+          },
+          "day": {
+            "type": "string",
+            "description": "Day of the week for the schedule",
+            "enum": ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"],
+            "example": "MONDAY"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "description": "Date of the schedule",
+            "example": "2025-06-15"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "time",
+            "description": "Start time of the schedule",
+            "example": "02:00 PM"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "time",
+            "description": "End time of the schedule",
+            "example": "03:00 PM"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "Bearer",
+        "bearerFormat": "JWT"
       }
     }
   }
