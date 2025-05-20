@@ -13,8 +13,8 @@ export class ScheduleRepositoryImpl implements ScheduleRepository {
     return this.scheduleDatasource.findById(id);
   }
 
-  findAll(): Promise<ScheduleEntity[]> {
-    return this.scheduleDatasource.findAll();
+  findAll(userId?: string): Promise<ScheduleEntity[]> {
+    return this.scheduleDatasource.findAll(userId);
   }
 
   create(
