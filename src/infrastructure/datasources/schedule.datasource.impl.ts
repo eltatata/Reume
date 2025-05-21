@@ -14,6 +14,23 @@ export class ScheduleDatasourceImpl implements ScheduleDatasource {
     return schedule ? ScheduleEntity.toEntity(schedule) : null;
   }
 
+  async findOverlapping(
+    startTime: Date,
+    endTime: Date,
+  ): Promise<ScheduleEntity[]> {
+    const schedules = await prisma.schedule.findMany({
+      where: {
+        startTime: {
+          lte: endTime,
+        },
+        endTime: {
+          gte: startTime,
+        },
+      },
+    });
+    return schedules.map(ScheduleEntity.toEntity);
+  }
+
   async findAll(userId?: string): Promise<ScheduleEntity[]> {
     const schedules = await prisma.schedule.findMany({
       where: {

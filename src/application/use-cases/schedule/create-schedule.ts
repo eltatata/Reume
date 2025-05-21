@@ -1,5 +1,6 @@
 import { loggerAdapter } from '../../../config';
 import {
+  CustomError,
   CreateScheduleDTO,
   ScheduleEntity,
   ScheduleRepository,
@@ -17,11 +18,19 @@ export class CreateSchedule implements CreateScheduleUseCase {
   ): Promise<ScheduleEntity> {
     logger.log(`Creating schedule for user: ${userId}`);
 
+    logger.log(`Checking for overlapping schedules`);
+    const overlappingSchedules = await this.scheduleRepository.findOverlapping(
+      createScheduleDTO.startTime as Date,
+      createScheduleDTO.endTime as Date,
+    );
+    if (overlappingSchedules.length > 0) {
+      throw CustomError.badRequest('Schedule overlaps with existing schedules');
+    }
+
     const schedule = await this.scheduleRepository.create(
       userId,
       createScheduleDTO,
     );
-
     logger.log(`Schedule created successfully for user: ${userId}`);
 
     return schedule;

@@ -13,6 +13,10 @@ export class ScheduleRepositoryImpl implements ScheduleRepository {
     return this.scheduleDatasource.findById(id);
   }
 
+  findOverlapping(startTime: Date, endTime: Date): Promise<ScheduleEntity[]> {
+    return this.scheduleDatasource.findOverlapping(startTime, endTime);
+  }
+
   findAll(userId?: string): Promise<ScheduleEntity[]> {
     return this.scheduleDatasource.findAll(userId);
   }
