@@ -17,8 +17,8 @@ export class ScheduleRepositoryImpl implements ScheduleRepository {
     return this.scheduleDatasource.findOverlapping(startTime, endTime);
   }
 
-  findAll(userId?: string): Promise<ScheduleEntity[]> {
-    return this.scheduleDatasource.findAll(userId);
+  findAll(): Promise<ScheduleEntity[]> {
+    return this.scheduleDatasource.findAll();
   }
 
   create(
