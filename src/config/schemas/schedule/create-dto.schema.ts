@@ -26,6 +26,20 @@ export const createScheduleSchema: z.ZodType<CreateScheduleDTO> = z
     path: ['endTime'],
   })
   .refine(
+    (data) => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return (
+        data.startTime.getTime() >= today.getTime() &&
+        data.endTime.getTime() >= today.getTime()
+      );
+    },
+    {
+      message: 'Schedules cannot be created in the past',
+      path: ['startTime'],
+    },
+  )
+  .refine(
     (data) =>
       data.startTime.getMinutes() % 15 === 0 &&
       data.endTime.getMinutes() % 15 === 0,
