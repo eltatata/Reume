@@ -1,10 +1,8 @@
-import { ValidationResult, WeekDay } from '../../';
+import { ValidationResult } from '../../';
 import { ZodAdapter, createScheduleSchema } from '../../../config';
 
 interface CreateScheduleDTOProps {
   title: string;
-  day: WeekDay;
-  date: string | Date;
   startTime: string | Date;
   endTime: string | Date;
 }
@@ -12,8 +10,6 @@ interface CreateScheduleDTOProps {
 export class CreateScheduleDTO {
   private constructor(
     public readonly title: string,
-    public readonly day: WeekDay,
-    public readonly date: string | Date,
     public readonly startTime: string | Date,
     public readonly endTime: string | Date,
   ) {}

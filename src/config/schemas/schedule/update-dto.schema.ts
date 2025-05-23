@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { UpdateScheduleDTO, WeekDay } from '../../../domain';
+import { UpdateScheduleDTO } from '../../../domain';
 
 export const updateScheduleSchema: z.ZodType<UpdateScheduleDTO> = z
   .object({
@@ -9,62 +9,19 @@ export const updateScheduleSchema: z.ZodType<UpdateScheduleDTO> = z
       .min(5, 'Title must be at least 5 characters long')
       .max(200, 'Title must be at most 200 characters long')
       .optional(),
-    day: z
-      .nativeEnum(WeekDay, {
-        errorMap: () => ({ message: 'Invalid day of the week' }),
-      })
-      .optional(),
     startTime: z
       .string()
-      .trim()
-      .regex(
-        /^(0[0-9]|1[0-2]):[0-5][0-9] (AM|PM)$/,
-        'Invalid start time format. Use HH:MM AM/PM',
-      )
-      .transform((timeStr) => {
-        const [time, period] = timeStr.split(' ');
-        const [hours, minutes] = time.split(':').map(Number);
-
-        const date = new Date();
-        date.setHours(
-          period === 'PM' && hours !== 12
-            ? hours + 12
-            : hours === 12 && period === 'AM'
-              ? 0
-              : hours,
-          minutes,
-          0,
-          0,
-        );
-
-        return date;
+      .refine((val) => !isNaN(Date.parse(val)), {
+        message: 'Start must be a valid ISO date string',
       })
+      .transform((val) => new Date(val))
       .optional(),
     endTime: z
       .string()
-      .trim()
-      .regex(
-        /^(0[0-9]|1[0-2]):[0-5][0-9] (AM|PM)$/,
-        'Invalid end time format. Use HH:MM AM/PM',
-      )
-      .transform((timeStr) => {
-        const [time, period] = timeStr.split(' ');
-        const [hours, minutes] = time.split(':').map(Number);
-
-        const date = new Date();
-        date.setHours(
-          period === 'PM' && hours !== 12
-            ? hours + 12
-            : hours === 12 && period === 'AM'
-              ? 0
-              : hours,
-          minutes,
-          0,
-          0,
-        );
-
-        return date;
+      .refine((val) => !isNaN(Date.parse(val)), {
+        message: 'End must be a valid ISO date string',
       })
+      .transform((val) => new Date(val))
       .optional(),
   })
   .refine(
@@ -97,19 +54,13 @@ export const updateScheduleSchema: z.ZodType<UpdateScheduleDTO> = z
   .refine(
     (data) => {
       if (data.startTime && data.endTime) {
-        const startHour = data.startTime.getHours();
-        const endHour = data.endTime.getHours();
+        const isInRange = (date: Date) => {
+          const hour = date.getHours();
+          return hour >= 6 && hour <= 18;
+        };
 
-        return (
-          startHour >= 6 &&
-          (startHour < 18 ||
-            (startHour === 18 && data.startTime.getMinutes() === 0)) &&
-          endHour <= 18 &&
-          (endHour > 6 || (endHour === 6 && data.endTime.getMinutes() === 0))
-        );
+        return isInRange(data.startTime) && isInRange(data.endTime);
       }
-
-      return true;
     },
     {
       message: 'Times must be between 6:00 AM and 6:00 PM',
