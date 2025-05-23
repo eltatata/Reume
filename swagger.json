@@ -585,36 +585,24 @@
       },
       "CreateScheduleRequest": {
         "type": "object",
-        "required": ["title", "day", "startTime", "endTime"],
+        "required": ["title", "startTime", "endTime"],
         "properties": {
           "title": {
             "type": "string",
             "description": "Title of the schedule",
             "example": "Meeting with client"
           },
-          "day": {
-            "type": "string",
-            "description": "Day of the week for the schedule",
-            "enum": ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"],
-            "example": "MONDAY"
-          },
-          "date": {
-            "type": "string",
-            "format": "date",
-            "description": "Date of the schedule",
-            "example": "2025-06-15"
-          },
           "startTime": {
             "type": "string",
             "format": "time",
             "description": "Start time of the schedule",
-            "example": "02:00 PM"
+            "example": "2025-05-23T12:30:00.000Z"
           },
           "endTime": {
             "type": "string",
             "format": "time",
             "description": "End time of the schedule",
-            "example": "03:00 PM"
+            "example": "2025-05-23T13:30:00.000Z"
           }
         }
       },
@@ -715,29 +703,29 @@
             "description": "Title of the schedule",
             "example": "Meeting with client"
           },
-          "day": {
-            "type": "string",
-            "description": "Day of the week for the schedule",
-            "enum": ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"],
-            "example": "MONDAY"
-          },
-          "date": {
-            "type": "string",
-            "format": "date",
-            "description": "Date of the schedule",
-            "example": "2025-06-15"
-          },
           "startTime": {
             "type": "string",
             "format": "time",
             "description": "Start time of the schedule",
-            "example": "02:00 PM"
+            "example": "2025-05-23T12:30:00.000Z"
           },
           "endTime": {
             "type": "string",
             "format": "time",
             "description": "End time of the schedule",
-            "example": "03:00 PM"
+            "example": "2025-05-23T13:30:00.000Z"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Schedule creation timestamp",
+            "example": "2025-05-23T16:07:05.056Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Schedule update timestamp",
+            "example": "2025-05-23T16:07:05.056Z"
           }
         }
       }
