@@ -5,7 +5,7 @@ import {
   FindAllSchedulesUseCase,
 } from '../../../domain';
 
-const logger = loggerAdapter('CreateScheduleUseCase');
+const logger = loggerAdapter('FindAllSchedulesUseCase');
 
 export class FindAllSchedules implements FindAllSchedulesUseCase {
   constructor(private readonly scheduleRepository: ScheduleRepository) {}
