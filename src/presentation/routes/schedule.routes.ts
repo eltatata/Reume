@@ -24,6 +24,11 @@ export class ScheduleRoutes {
       AuthMiddleware.validateJWT,
       scheduleController.findAllSchedules,
     );
+    router.put(
+      '/:id',
+      AuthMiddleware.validateJWT,
+      scheduleController.updateSchedule,
+    );
 
     return router;
   }
