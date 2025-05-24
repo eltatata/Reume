@@ -7,45 +7,32 @@ export const updateScheduleSchema: z.ZodType<UpdateScheduleDTO> = z
       .string()
       .trim()
       .min(5, 'Title must be at least 5 characters long')
-      .max(200, 'Title must be at most 200 characters long')
-      .optional(),
+      .max(200, 'Title must be at most 200 characters long'),
     startTime: z
       .string()
       .refine((val) => !isNaN(Date.parse(val)), {
         message: 'Start must be a valid ISO date string',
       })
-      .transform((val) => new Date(val))
-      .optional(),
+      .transform((val) => new Date(val)),
     endTime: z
       .string()
       .refine((val) => !isNaN(Date.parse(val)), {
         message: 'End must be a valid ISO date string',
       })
-      .transform((val) => new Date(val))
-      .optional(),
+      .transform((val) => new Date(val)),
+  })
+  .refine((data) => data.startTime < data.endTime, {
+    message: 'End time must be after start time',
+    path: ['endTime'],
   })
   .refine(
     (data) => {
-      if (data.startTime && data.endTime) {
-        return data.startTime < data.endTime;
-      }
-      return true;
-    },
-    {
-      message: 'End time must be after start time',
-      path: ['endTime'],
-    },
-  )
-  .refine(
-    (data) => {
-      if (data.startTime && data.endTime) {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        return (
-          data.startTime.getTime() >= today.getTime() &&
-          data.endTime.getTime() >= today.getTime()
-        );
-      }
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return (
+        data.startTime.getTime() >= today.getTime() &&
+        data.endTime.getTime() >= today.getTime()
+      );
     },
     {
       message: 'Schedules cannot be created in the past',
@@ -53,15 +40,9 @@ export const updateScheduleSchema: z.ZodType<UpdateScheduleDTO> = z
     },
   )
   .refine(
-    (data) => {
-      if (data.startTime && data.endTime) {
-        return (
-          data.startTime.getMinutes() % 15 === 0 &&
-          data.endTime.getMinutes() % 15 === 0
-        );
-      }
-      return true;
-    },
+    (data) =>
+      data.startTime.getMinutes() % 15 === 0 &&
+      data.endTime.getMinutes() % 15 === 0,
     {
       message: 'Times must be in 15-minute intervals',
       path: ['startTime'],
@@ -69,37 +50,15 @@ export const updateScheduleSchema: z.ZodType<UpdateScheduleDTO> = z
   )
   .refine(
     (data) => {
-      if (data.startTime && data.endTime) {
-        const isInRange = (date: Date) => {
-          const hour = date.getHours();
-          return hour >= 6 && hour <= 18;
-        };
+      const isInRange = (date: Date) => {
+        const hour = date.getHours();
+        return hour >= 6 && hour <= 18;
+      };
 
-        return isInRange(data.startTime) && isInRange(data.endTime);
-      }
+      return isInRange(data.startTime) && isInRange(data.endTime);
     },
     {
-      message: 'Times must be between 6:00 AM and 6:00 PM',
+      message: 'Times must be between 06:00 am and 06:00 pm',
       path: ['startTime'],
-    },
-  )
-  .refine(
-    (data) => {
-      const hasStartTime = data.startTime !== undefined;
-      const hasEndTime = data.endTime !== undefined;
-
-      return !(hasStartTime && !hasEndTime) && !(!hasStartTime && hasEndTime);
-    },
-    {
-      message: 'Both start time and end time must be provided together',
-      path: ['startTime'],
-    },
-  )
-  .refine(
-    (data) => {
-      return Object.keys(data).length > 0;
-    },
-    {
-      message: 'At least one field must be provided for update',
     },
   );
