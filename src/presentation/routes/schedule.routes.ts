@@ -29,6 +29,11 @@ export class ScheduleRoutes {
       AuthMiddleware.validateJWT,
       scheduleController.updateSchedule,
     );
+    router.delete(
+      '/:id',
+      AuthMiddleware.validateJWT,
+      scheduleController.deleteSchedule,
+    );
 
     return router;
   }
