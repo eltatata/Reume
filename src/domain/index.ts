@@ -7,6 +7,7 @@ export * from './interfaces/otp/verify-otp.interfaces';
 export * from './interfaces/otp/resend-otp.interfaces';
 export * from './interfaces/schedule/create-schedule.interfaces';
 export * from './interfaces/schedule/find-all-schedules.interfaces';
+export * from './interfaces/schedule/update-schedule.interfaces';
 export * from './dtos/auth/register-user';
 export * from './dtos/auth/login-user';
 export * from './dtos/user/update-user';
