@@ -7,6 +7,7 @@ import {
 } from '../../domain';
 import {
   CreateSchedule,
+  DeleteSchedule,
   FindAllSchedules,
   UpdateSchedule,
 } from '../../application';
@@ -44,6 +45,13 @@ export class ScheduleController {
     new UpdateSchedule(this.scheduleRepository)
       .execute(req.user!.id, req.params.id, validatedData!)
       .then((data) => res.status(200).json(data))
+      .catch((error) => ErrorHandlerService.handleError(error, res));
+  };
+
+  deleteSchedule = (req: RequestExtended, res: Response) => {
+    new DeleteSchedule(this.scheduleRepository)
+      .execute(req.user!.id, req.params.id)
+      .then(() => res.status(204).send())
       .catch((error) => ErrorHandlerService.handleError(error, res));
   };
 }
