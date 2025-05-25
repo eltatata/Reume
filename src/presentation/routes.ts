@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { AuthRoutes, OtpRoutes } from './';
+import { AuthRoutes, OtpRoutes, ScheduleRoutes } from './';
 
 export class AppRoutes {
   static get routes() {
@@ -7,6 +7,7 @@ export class AppRoutes {
 
     router.use('/api/auth', AuthRoutes.routes);
     router.use('/api/otp', OtpRoutes.routes);
+    router.use('/api/schedule', ScheduleRoutes.routes);
 
     router.get('/api/health', (req, res) => {
       res.json({ status: 'The API is healthy' });

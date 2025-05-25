@@ -1,0 +1,92 @@
+import { ScheduleEntity, CreateScheduleDTO } from '../../../../src/domain';
+import { CreateSchedule } from '../../../../src/application';
+
+describe('CreateSchedule', () => {
+  const scheduleRepository = {
+    findById: jest.fn(),
+    findOverlapping: jest.fn(),
+    findAll: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+  };
+  const createSchedule = new CreateSchedule(scheduleRepository);
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('should create a schedule successfully', async () => {
+    const userId = '123e4567-e89b-12d3-a456-426614174000';
+    const scheduleData = {
+      title: 'Meeting',
+      startTime: '2025-05-24T11:30:00.000Z',
+      endTime: '2025-05-24T12:00:00.000Z',
+    };
+
+    const { validatedData } = CreateScheduleDTO.create(scheduleData);
+
+    scheduleRepository.findOverlapping.mockResolvedValue([]);
+    scheduleRepository.create.mockResolvedValue(
+      new ScheduleEntity(
+        '123e4567-e89b-12d3-a456-426614174000',
+        userId,
+        validatedData!.title,
+        new Date(validatedData!.startTime).toISOString(),
+        new Date(validatedData!.endTime).toISOString(),
+        new Date(),
+        new Date(),
+      ),
+    );
+
+    const result = await createSchedule.execute(userId, validatedData!);
+
+    expect(result).toEqual(expect.any(ScheduleEntity));
+    expect(result).toEqual(
+      new ScheduleEntity(
+        '123e4567-e89b-12d3-a456-426614174000',
+        userId,
+        validatedData!.title,
+        new Date(validatedData!.startTime).toISOString(),
+        new Date(validatedData!.endTime).toISOString(),
+        expect.any(Date),
+        expect.any(Date),
+      ),
+    );
+    expect(scheduleRepository.findOverlapping).toHaveBeenCalledWith(
+      validatedData!.startTime,
+      validatedData!.endTime,
+    );
+    expect(scheduleRepository.create).toHaveBeenCalledWith(
+      userId,
+      validatedData!,
+    );
+  });
+
+  test('should throw an error if schedule overlaps with existing schedules', async () => {
+    const userId = '123e4567-e89b-12d3-a456-426614174000';
+    const scheduleData = {
+      title: 'Meeting',
+      startTime: '2025-05-24T11:30:00.000Z',
+      endTime: '2025-05-24T12:00:00.000Z',
+    };
+
+    const { validatedData } = CreateScheduleDTO.create(scheduleData);
+
+    scheduleRepository.findOverlapping.mockResolvedValue([
+      new ScheduleEntity(
+        '123e4567-e89b-12d3-a456-426614174000',
+        userId,
+        'Existing Meeting',
+        new Date('2025-05-24T11:00:00.000Z').toISOString(),
+        new Date('2025-05-24T12:30:00.000Z').toISOString(),
+        new Date(),
+        new Date(),
+      ),
+    ]);
+
+    await expect(
+      createSchedule.execute(userId, validatedData!),
+    ).rejects.toThrow('Schedule overlaps with existing schedules');
+  });
+});
