@@ -23,15 +23,15 @@ describe('UpdateSchedule', () => {
       scheduleId,
       userId,
       'Meeting',
-      '2025-05-24T11:30:00.000Z',
-      '2025-05-24T12:00:00.000Z',
+      new Date(new Date().setHours(11, 0, 0, 0)).toISOString(),
+      new Date(new Date().setHours(12, 0, 0, 0)).toISOString(),
       new Date(),
       new Date(),
     );
     const updatedData = {
       title: 'Updated Meeting',
-      startTime: '2025-05-24T12:30:00.000Z',
-      endTime: '2025-05-24T13:00:00.000Z',
+      startTime: new Date(new Date().setHours(12, 30, 0, 0)).toISOString(),
+      endTime: new Date(new Date().setHours(13, 0, 0, 0)).toISOString(),
     };
 
     scheduleRepository.findById.mockResolvedValue(existingSchedule);
@@ -135,15 +135,15 @@ describe('UpdateSchedule', () => {
       scheduleId,
       userId,
       'Meeting',
-      '2025-05-24T11:30:00.000Z',
-      '2025-05-24T12:00:00.000Z',
+      new Date(new Date().setHours(11, 0, 0, 0)).toISOString(),
+      new Date(new Date().setHours(12, 0, 0, 0)).toISOString(),
       new Date(),
       new Date(),
     );
     const updatedData = {
       title: 'Updated Meeting',
-      startTime: '2025-05-24T11:00:00.000Z',
-      endTime: '2025-05-24T12:30:00.000Z',
+      startTime: new Date(new Date().setHours(14, 0, 0, 0)).toISOString(),
+      endTime: new Date(new Date().setHours(15, 30, 0, 0)).toISOString(),
     };
 
     const { validatedData } = UpdateScheduleDTO.create(updatedData);
@@ -154,8 +154,8 @@ describe('UpdateSchedule', () => {
         '123e4567-e89b-12d3-a456-426614174000',
         userId,
         'Existing Meeting',
-        '2025-05-24T11:00:00.000Z',
-        '2025-05-24T12:30:00.000Z',
+        new Date(new Date().setHours(14, 0, 0, 0)).toISOString(),
+        new Date(new Date().setHours(15, 0, 0, 0)).toISOString(),
         new Date(),
         new Date(),
       ),
