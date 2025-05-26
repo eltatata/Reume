@@ -5,6 +5,7 @@ export * from './adapters/otp.adapter';
 export * from './adapters/morgan.adapter';
 export * from './adapters/logger.adapter';
 export * from './adapters/jwt.adapter';
+export * from './adapters/cors.adapter';
 export * from './swagger/swagger.config';
 export * from './schemas/auth/login-dto.schema';
 export * from './schemas/auth/register-dto.schema';
