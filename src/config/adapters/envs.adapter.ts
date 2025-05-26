@@ -9,4 +9,6 @@ export const envs = {
   POSTGRES_DB: get('POSTGRES_DB').required().asString(),
   RESEND_API_KEY: get('RESEND_API_KEY').required().asString(),
   JWT_SECRET: get('JWT_SECRET').required().asString(),
+  REUME_FRONTEND_URL: get('REUME_FRONTEND_URL').required().asString(),
+  ORIGIN_URL: get('ORIGIN_URL').required().asString(),
 };

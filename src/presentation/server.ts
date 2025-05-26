@@ -1,6 +1,12 @@
 import express, { Router, Request, Response, NextFunction } from 'express';
 import swaggerUi from 'swagger-ui-express';
-import { envs, swaggerSpec, logger, morganAdapter } from '../config';
+import {
+  envs,
+  swaggerSpec,
+  logger,
+  morganAdapter,
+  corsAdapter,
+} from '../config';
 import { ErrorHandlerService } from './';
 
 interface Options {
@@ -23,6 +29,7 @@ export class Server {
   }
 
   start() {
+    this.app.use(corsAdapter());
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
 
