@@ -20,8 +20,8 @@ describe('CreateSchedule', () => {
     const userId = '123e4567-e89b-12d3-a456-426614174000';
     const scheduleData = {
       title: 'Meeting',
-      startTime: '2025-05-24T11:30:00.000Z',
-      endTime: '2025-05-24T12:00:00.000Z',
+      startTime: new Date(new Date().setHours(11, 0, 0, 0)).toISOString(),
+      endTime: new Date(new Date().setHours(12, 0, 0, 0)).toISOString(),
     };
 
     const { validatedData } = CreateScheduleDTO.create(scheduleData);
@@ -67,8 +67,8 @@ describe('CreateSchedule', () => {
     const userId = '123e4567-e89b-12d3-a456-426614174000';
     const scheduleData = {
       title: 'Meeting',
-      startTime: '2025-05-24T11:30:00.000Z',
-      endTime: '2025-05-24T12:00:00.000Z',
+      startTime: new Date(new Date().setHours(11, 0, 0, 0)).toISOString(),
+      endTime: new Date(new Date().setHours(12, 0, 0, 0)).toISOString(),
     };
 
     const { validatedData } = CreateScheduleDTO.create(scheduleData);
@@ -78,8 +78,8 @@ describe('CreateSchedule', () => {
         '123e4567-e89b-12d3-a456-426614174000',
         userId,
         'Existing Meeting',
-        new Date('2025-05-24T11:00:00.000Z').toISOString(),
-        new Date('2025-05-24T12:30:00.000Z').toISOString(),
+        new Date(new Date().setHours(11, 0, 0, 0)).toISOString(),
+        new Date(new Date().setHours(12, 30, 0, 0)).toISOString(),
         new Date(),
         new Date(),
       ),

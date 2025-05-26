@@ -4,8 +4,8 @@ describe('CreateScheduleDTO', () => {
   test('should create a valid CreateScheduleDTO', () => {
     const data = {
       title: 'Meeting',
-      startTime: '2025-05-24T11:30:00.000Z',
-      endTime: '2025-05-24T12:00:00.000Z',
+      startTime: new Date(new Date().setHours(11, 0, 0, 0)).toISOString(),
+      endTime: new Date(new Date().setHours(12, 0, 0, 0)).toISOString(),
     };
 
     const result = CreateScheduleDTO.create(data);
