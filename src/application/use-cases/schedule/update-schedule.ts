@@ -32,7 +32,10 @@ export class UpdateSchedule implements UpdateScheduleUseCase {
       updateScheduleDTO.startTime as Date,
       updateScheduleDTO.endTime as Date,
     );
-    if (overlappingSchedules.length > 0) {
+    const hasOverlap = overlappingSchedules.some(
+      (schedule) => schedule.id !== scheduleId,
+    );
+    if (hasOverlap) {
       throw CustomError.badRequest('Schedule overlaps with existing schedules');
     }
 

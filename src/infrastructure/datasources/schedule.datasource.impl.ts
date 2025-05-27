@@ -20,11 +20,19 @@ export class ScheduleDatasourceImpl implements ScheduleDatasource {
   ): Promise<ScheduleEntity[]> {
     const schedules = await prisma.schedule.findMany({
       where: {
-        startTime: {
-          lte: endTime,
-        },
-        endTime: {
-          gte: startTime,
+        NOT: {
+          OR: [
+            {
+              endTime: {
+                lte: startTime,
+              },
+            },
+            {
+              startTime: {
+                gte: endTime,
+              },
+            },
+          ],
         },
       },
     });
