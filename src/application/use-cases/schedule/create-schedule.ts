@@ -24,7 +24,7 @@ export class CreateSchedule implements CreateScheduleUseCase {
       createScheduleDTO.endTime as Date,
     );
     if (overlappingSchedules.length > 0) {
-      throw CustomError.badRequest('Schedule overlaps with existing schedules');
+      throw CustomError.conflict('Schedule overlaps with existing schedules');
     }
 
     const schedule = await this.scheduleRepository.create(

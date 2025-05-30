@@ -36,7 +36,7 @@ export class UpdateSchedule implements UpdateScheduleUseCase {
       (schedule) => schedule.id !== scheduleId,
     );
     if (hasOverlap) {
-      throw CustomError.badRequest('Schedule overlaps with existing schedules');
+      throw CustomError.conflict('Schedule overlaps with existing schedules');
     }
 
     const schedule = await this.scheduleRepository.update(
