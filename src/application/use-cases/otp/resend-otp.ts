@@ -25,7 +25,7 @@ export class ResendOtp implements ResendOtpUseCase {
     const existingUser = await this.userRepository.findByEmail(email);
     if (!existingUser) throw CustomError.notFound('User not found');
     if (existingUser.verified)
-      throw CustomError.badRequest('User already verified');
+      throw CustomError.conflict('User already verified');
 
     const existingOtp = await this.otpRepository.findByUserId(existingUser.id);
     const lastSent = existingOtp?.createdAt;
@@ -35,7 +35,9 @@ export class ResendOtp implements ResendOtpUseCase {
       lastSent &&
       now.getTime() - lastSent.getTime() < this.THROTTLE_WINDOW_MS
     ) {
-      throw CustomError.badRequest('Please wait before requesting a new OTP');
+      throw CustomError.tooManyRequests(
+        'Please wait before requesting a new OTP',
+      );
     }
 
     const otp = otpAdapter.generate();
