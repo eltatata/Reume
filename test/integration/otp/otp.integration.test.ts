@@ -119,7 +119,7 @@ describe('OTP Integration Tests', () => {
         .post('/api/otp/resend')
         .send(validResendData);
 
-      expect(response.status).toBe(400);
+      expect(response.status).toBe(429);
       expect(response.body).toHaveProperty('error');
       expect(response.body.error).toBe(
         'Please wait before requesting a new OTP',
@@ -187,7 +187,7 @@ describe('OTP Integration Tests', () => {
         .post('/api/otp/resend')
         .send(validResendData);
 
-      expect(response.status).toBe(400);
+      expect(response.status).toBe(409);
       expect(response.body).toHaveProperty('error');
       expect(response.body.error).toBe('User already verified');
     });

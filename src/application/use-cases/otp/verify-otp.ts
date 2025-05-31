@@ -21,9 +21,9 @@ export class VerifyOtp implements VerifyOtpUseCase {
     const otp = await this.otpRepository.findByUserId(verifyOtpDto.userId);
     if (!otp) throw CustomError.notFound('OTP not found');
 
-    if (otp.used) throw CustomError.badRequest('OTP already used');
+    if (otp.used) throw CustomError.conflict('OTP already used');
     if (otp.expiresAt < new Date()) {
-      throw CustomError.badRequest('OTP expired');
+      throw CustomError.gone('OTP expired');
     }
 
     const isOtpValid = bcryptAdapter.compare(verifyOtpDto.otp, otp.otp);

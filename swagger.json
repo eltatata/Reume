@@ -308,6 +308,25 @@
                 }
               }
             }
+          },
+          "410": {
+            "description": "OTP expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message"
+                    }
+                  },
+                  "example": {
+                    "message": "OTP has expired"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -369,6 +388,44 @@
                   },
                   "example": {
                     "message": "User not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "User already verified",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message"
+                    }
+                  },
+                  "example": {
+                    "message": "User already verified"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message"
+                    }
+                  },
+                  "example": {
+                    "message": "Too many requests"
                   }
                 }
               }
@@ -444,6 +501,25 @@
                   },
                   "example": {
                     "message": "Unauthorized access"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message"
+                    }
+                  },
+                  "example": {
+                    "message": "Conflict error"
                   }
                 }
               }
@@ -611,6 +687,25 @@
                   },
                   "example": {
                     "message": "Schedule not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message"
+                    }
+                  },
+                  "example": {
+                    "message": "Conflict error"
                   }
                 }
               }
