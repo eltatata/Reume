@@ -1,8 +1,8 @@
 import { UserEntity, LoginUserDto } from '../../';
 
 export interface LoginUserUseCaseResponse {
-  token: string;
-  user: UserEntity;
+  token?: string;
+  user: Partial<UserEntity>;
 }
 
 export interface LoginUserUseCase {
