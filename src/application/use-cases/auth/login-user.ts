@@ -2,6 +2,7 @@ import { bcryptAdapter, jwtAdapter, loggerAdapter } from '../../../config';
 import {
   CustomError,
   LoginUserDto,
+  LoginUserUnverifiedResponse,
   LoginUserUseCase,
   LoginUserUseCaseResponse,
   UserRepository,
@@ -12,12 +13,14 @@ const logger = loggerAdapter('LoginUserUseCase');
 export class LoginUser implements LoginUserUseCase {
   constructor(private readonly userRepository: UserRepository) {}
 
-  async execute(loginUserDto: LoginUserDto): Promise<LoginUserUseCaseResponse> {
+  async execute(
+    loginUserDto: LoginUserDto,
+  ): Promise<LoginUserUseCaseResponse | LoginUserUnverifiedResponse> {
     logger.log(`Starting user login process for: ${loginUserDto.email}`);
 
     const user = await this.userRepository.findByEmail(loginUserDto.email);
     if (!user) throw CustomError.notFound('User not found');
-    if (!user.verified) return { user: { id: user.id, email: user.email } };
+    if (!user.verified) return { id: user.id, email: user.email };
     const isPasswordValid = bcryptAdapter.compare(
       loginUserDto.password,
       user.password!,
