@@ -38,7 +38,13 @@ export class AuthController {
 
     new LoginUser(this.userRepository)
       .execute(validatedData!)
-      .then((data) => res.status(200).json(data))
+      .then((data) => {
+        if ('token' in data) {
+          res.status(200).json(data);
+        } else {
+          res.status(403).json(data);
+        }
+      })
       .catch((error) => ErrorHandlerService.handleError(error, res));
   };
 }
