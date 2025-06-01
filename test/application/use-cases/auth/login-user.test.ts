@@ -1,4 +1,9 @@
-import { LoginUserDto, CustomError, UserRole } from '../../../../src/domain';
+import {
+  LoginUserDto,
+  CustomError,
+  UserRole,
+  LoginUserUseCaseResponse,
+} from '../../../../src/domain';
 import { LoginUser } from '../../../../src/application';
 import { MockUserRepository, MockUserDatasource } from '../../../mocks';
 
@@ -22,7 +27,9 @@ describe('LoginUser', () => {
         password: 'password123',
       };
 
-      const loggedInUser = await loginUser.execute(loginUserDto);
+      const loggedInUser = (await loginUser.execute(
+        loginUserDto,
+      )) as LoginUserUseCaseResponse;
 
       expect(loggedInUser).toBeDefined();
       expect(loggedInUser.token).toBeDefined();
