@@ -20,7 +20,10 @@ export class LoginUser implements LoginUserUseCase {
 
     const user = await this.userRepository.findByEmail(loginUserDto.email);
     if (!user) throw CustomError.notFound('User not found');
-    if (!user.verified) return { id: user.id, email: user.email };
+    if (!user.verified) {
+      logger.log(`User ${user.email} is not verified`);
+      return { id: user.id, email: user.email };
+    }
     const isPasswordValid = bcryptAdapter.compare(
       loginUserDto.password,
       user.password!,
