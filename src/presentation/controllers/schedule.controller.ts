@@ -2,6 +2,7 @@ import { Response } from 'express';
 import { ErrorHandlerService, RequestExtended } from '../';
 import {
   CreateScheduleDTO,
+  FindAvailableTimesDTO,
   ScheduleRepository,
   UpdateScheduleDTO,
 } from '../../domain';
@@ -9,6 +10,7 @@ import {
   CreateSchedule,
   DeleteSchedule,
   FindAllSchedules,
+  FindAvailableTimes,
   UpdateSchedule,
 } from '../../application';
 
@@ -32,6 +34,20 @@ export class ScheduleController {
     new FindAllSchedules(this.scheduleRepository)
       .execute()
       .then((data) => res.status(200).json(data))
+      .catch((error) => ErrorHandlerService.handleError(error, res));
+  };
+
+  findAvailableTimes = (req: RequestExtended, res: Response) => {
+    const { date } = req.params;
+    const { errors, validatedData } = FindAvailableTimesDTO.create({ date });
+    if (errors) {
+      res.status(400).json({ errors });
+      return;
+    }
+
+    new FindAvailableTimes(this.scheduleRepository)
+      .execute(validatedData!)
+      .then((data) => res.status(200).json({ availableTimes: data }))
       .catch((error) => ErrorHandlerService.handleError(error, res));
   };
 
