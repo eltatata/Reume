@@ -1,5 +1,6 @@
 import {
   CreateScheduleDTO,
+  FindAvailableTimesDTO,
   ScheduleDatasource,
   ScheduleEntity,
   ScheduleRepository,
@@ -15,6 +16,12 @@ export class ScheduleRepositoryImpl implements ScheduleRepository {
 
   findOverlapping(startTime: Date, endTime: Date): Promise<ScheduleEntity[]> {
     return this.scheduleDatasource.findOverlapping(startTime, endTime);
+  }
+
+  findByDate(
+    findAvailableTimesDto: FindAvailableTimesDTO,
+  ): Promise<ScheduleEntity[]> {
+    return this.scheduleDatasource.findByDate(findAvailableTimesDto);
   }
 
   findAll(): Promise<ScheduleEntity[]> {
