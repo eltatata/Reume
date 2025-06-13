@@ -26,7 +26,11 @@ export class FindAvailableTimes implements FindAvailableTimesUseCase {
     );
 
     const availableTimes = this.generateTimeSlots();
-    const filteredTimes = this.filterOccupiedSlots(availableTimes, schedules);
+    const filteredTimes = this.filterOccupiedSlots(
+      availableTimes,
+      schedules,
+      findAvailableTimesDto.date,
+    );
 
     logger.log(
       `Found ${filteredTimes.length} available time slots for date: ${findAvailableTimesDto.date}`,
@@ -52,22 +56,21 @@ export class FindAvailableTimes implements FindAvailableTimesUseCase {
   private filterOccupiedSlots(
     timeSlots: string[],
     schedules: ScheduleEntity[],
+    baseDate: string,
   ): string[] {
+    const scheduleRanges = schedules.map((schedule) => ({
+      start: new Date(schedule.startTime),
+      end: new Date(schedule.endTime),
+    }));
+
     return timeSlots.filter((timeSlot) => {
       const [hour, minute] = timeSlot.split(':').map(Number);
-      const slotDateTime = new Date(
-        new Date().getFullYear(),
-        new Date().getMonth(),
-        new Date().getDate(),
-        hour,
-        minute,
-      );
+      const [year, month, day] = baseDate.split('-').map(Number);
+      const slotDateTime = new Date(year, month - 1, day, hour, minute);
 
-      return !schedules.some((schedule) => {
-        const startTime = new Date(schedule.startTime);
-        const endTime = new Date(schedule.endTime);
-        return slotDateTime >= startTime && slotDateTime < endTime;
-      });
+      return !scheduleRanges.some(
+        ({ start, end }) => slotDateTime >= start && slotDateTime < end,
+      );
     });
   }
 }
