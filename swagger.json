@@ -570,6 +570,93 @@
         }
       }
     },
+    "/schedule/available-times/{date}": {
+      "get": {
+        "summary": "Get available time slots for a specific date",
+        "description": "Returns available time slots (6AM to 6PM in 15-minute intervals) excluding already scheduled appointments",
+        "tags": ["Schedule"],
+        "security": [
+          { "bearerAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "date",
+            "in": "path",
+            "required": true,
+            "description": "Date in YYYY-MM-DD format",
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2025-06-15"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Available times retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "availableTimes": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "description": "Time slot in HH:MM format",
+                        "example": "09:15"
+                      },
+                      "description": "Array of available time slots"
+                    }
+                  },
+                  "example": {
+                    "availableTimes": ["06:00", "06:15", "06:30", "10:00", "10:15", "15:00", "15:15", "17:45"]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid date format",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message"
+                    }
+                  },
+                  "example": {
+                    "message": "Invalid date format. Expected YYYY-MM-DD"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message"
+                    }
+                  },
+                  "example": {
+                    "message": "Unauthorized access"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/schedule/{id}": {
       "put": {
         "summary": "Update a schedule",
