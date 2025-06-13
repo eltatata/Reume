@@ -6,7 +6,7 @@ interface FindAvailableTimesDTOProps {
 }
 
 export class FindAvailableTimesDTO {
-  constructor(public readonly date: string) {}
+  private constructor(public readonly date: string) {}
 
   static create(
     props: FindAvailableTimesDTOProps,
