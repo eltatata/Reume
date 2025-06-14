@@ -41,8 +41,11 @@ export class FindAvailableTimes implements FindAvailableTimesUseCase {
   private generateTimeSlots(): string[] {
     const timeSlots: string[] = [];
 
-    for (let hour = this.START_HOUR; hour < this.END_HOUR; hour++) {
+    for (let hour = this.START_HOUR; hour <= this.END_HOUR; hour++) {
       for (let minute = 0; minute < 60; minute += 15) {
+        if (hour === this.END_HOUR && minute > 0) {
+          break;
+        }
         const timeSlot = `${hour.toString().padStart(2, '0')}:${minute
           .toString()
           .padStart(2, '0')}`;
