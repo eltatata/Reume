@@ -9,8 +9,8 @@ import {
 const logger = loggerAdapter('FindAvailableTimesUseCase');
 
 export class FindAvailableTimes implements FindAvailableTimesUseCase {
-  private readonly START_HOUR = 6;
-  private readonly END_HOUR = 18;
+  private readonly START_HOUR = '06:00';
+  private readonly END_HOUR = '18:00';
 
   constructor(private readonly scheduleRepository: ScheduleRepository) {}
 
@@ -25,55 +25,70 @@ export class FindAvailableTimes implements FindAvailableTimesUseCase {
       findAvailableTimesDto,
     );
 
-    const availableTimes = this.generateTimeSlots();
-    const filteredTimes = this.filterOccupiedSlots(
-      availableTimes,
+    const availableSlots = this.calculateAvailableSlots(
       schedules,
       findAvailableTimesDto.date,
     );
 
     logger.log(
-      `Found ${filteredTimes.length} available time slots for date: ${findAvailableTimesDto.date}`,
+      `Found ${availableSlots.length} available time slots for date: ${findAvailableTimesDto.date}`,
     );
-    return filteredTimes;
+    return availableSlots;
   }
 
-  private generateTimeSlots(): string[] {
-    const timeSlots: string[] = [];
-
-    for (let hour = this.START_HOUR; hour <= this.END_HOUR; hour++) {
-      for (let minute = 0; minute < 60; minute += 15) {
-        if (hour === this.END_HOUR && minute > 0) {
-          break;
-        }
-        const timeSlot = `${hour.toString().padStart(2, '0')}:${minute
-          .toString()
-          .padStart(2, '0')}`;
-        timeSlots.push(timeSlot);
-      }
-    }
-
-    return timeSlots;
-  }
-
-  private filterOccupiedSlots(
-    timeSlots: string[],
+  private calculateAvailableSlots(
     schedules: ScheduleEntity[],
     baseDate: string,
   ): string[] {
-    const scheduleRanges = schedules.map((schedule) => ({
-      start: new Date(schedule.startTime),
-      end: new Date(schedule.endTime),
-    }));
+    const availableSlots: string[] = [];
 
-    return timeSlots.filter((timeSlot) => {
-      const [hour, minute] = timeSlot.split(':').map(Number);
-      const [year, month, day] = baseDate.split('-').map(Number);
-      const slotDateTime = new Date(year, month - 1, day, hour, minute);
+    const dayStart = new Date(`${baseDate}T${this.START_HOUR}:00`);
+    const dayEnd = new Date(`${baseDate}T${this.END_HOUR}:00`);
 
-      return !scheduleRanges.some(
-        ({ start, end }) => slotDateTime >= start && slotDateTime < end,
-      );
-    });
+    let currentTime = dayStart;
+
+    for (const schedule of schedules) {
+      const scheduleStart = new Date(schedule.startTime);
+      const scheduleEnd = new Date(schedule.endTime);
+
+      if (currentTime < scheduleStart) {
+        this.addAvailableSlot(availableSlots, currentTime, scheduleStart);
+      }
+
+      if (scheduleEnd > currentTime) {
+        currentTime = scheduleEnd;
+      }
+    }
+
+    if (currentTime < dayEnd) {
+      this.addAvailableSlot(availableSlots, currentTime, dayEnd);
+    }
+
+    return availableSlots;
+  }
+
+  private addAvailableSlot(
+    availableSlots: string[],
+    startTime: Date,
+    endTime: Date,
+  ): void {
+    availableSlots.push(this.formatTime(startTime));
+
+    let current = new Date(startTime);
+
+    while (current < endTime) {
+      const next = new Date(current.getTime() + 15 * 60 * 1000);
+      if (next <= endTime) {
+        availableSlots.push(this.formatTime(next));
+      }
+      current = next;
+    }
+  }
+
+  private formatTime(date: Date): string {
+    return `${date.getHours().toString().padStart(2, '0')}:${date
+      .getMinutes()
+      .toString()
+      .padStart(2, '0')}`;
   }
 }
