@@ -26,7 +26,7 @@ export class FindAvailableTimes implements FindAvailableTimesUseCase {
     );
 
     const availableSlots = this.calculateAvailableSlots(
-      schedules,
+      this.filterSchedules(findAvailableTimesDto.schedule, schedules),
       findAvailableTimesDto.date,
     );
 
@@ -34,6 +34,14 @@ export class FindAvailableTimes implements FindAvailableTimesUseCase {
       `Found ${availableSlots.length} available time slots for date: ${findAvailableTimesDto.date}`,
     );
     return availableSlots;
+  }
+
+  private filterSchedules(
+    schedule: string | undefined,
+    schedules: ScheduleEntity[],
+  ): ScheduleEntity[] {
+    if (!schedule) return schedules;
+    return schedules.filter((item) => item.id !== schedule);
   }
 
   private calculateAvailableSlots(

@@ -573,7 +573,7 @@
     "/schedule/available-times/{date}": {
       "get": {
         "summary": "Get available time slots for a specific date",
-        "description": "Returns available time slots (6AM to 6PM in 15-minute intervals) excluding already scheduled appointments",
+        "description": "Returns available time slots (6AM to 6PM in 15-minute intervals) excluding already scheduled appointments. When updating an existing schedule, provide the schedule UUID in the schedule parameter to exclude it from conflict checking.",
         "tags": ["Schedule"],
         "security": [
           { "bearerAuth": [] }
@@ -588,6 +588,17 @@
               "type": "string",
               "format": "date",
               "example": "2025-06-15"
+            }
+          },
+          {
+            "name": "schedule",
+            "in": "query",
+            "required": false,
+            "description": "UUID of the schedule being updated. When provided, the system will exclude this specific schedule from conflict checking to allow updating it with overlapping times.",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
             }
           }
         ],

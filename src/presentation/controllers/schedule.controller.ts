@@ -39,7 +39,12 @@ export class ScheduleController {
 
   findAvailableTimes = (req: RequestExtended, res: Response) => {
     const { date } = req.params;
-    const { errors, validatedData } = FindAvailableTimesDTO.create({ date });
+    const { schedule } = req.query;
+    const { errors, validatedData } = FindAvailableTimesDTO.create({
+      date,
+      schedule: typeof schedule === 'string' ? schedule : undefined,
+    });
+
     if (errors) {
       res.status(400).json({ errors });
       return;

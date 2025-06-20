@@ -27,4 +27,9 @@ export const findAvailableTimesSchema: z.ZodType<FindAvailableTimesDTO> =
         },
         { message: 'Date cannot be in the past' },
       ),
+    schedule: z
+      .string()
+      .trim()
+      .uuid({ message: 'Schedule must be a valid UUID' })
+      .optional(),
   });
