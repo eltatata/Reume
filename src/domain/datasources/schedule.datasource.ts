@@ -11,7 +11,7 @@ export interface ScheduleDatasource {
   findByDate(
     findAvailableTimesDto: FindAvailableTimesDTO,
   ): Promise<ScheduleEntity[]>;
-  findAll(): Promise<ScheduleEntity[]>;
+  findAll(userId?: string): Promise<ScheduleEntity[]>;
   create(
     userId: string,
     createScheduleDto: CreateScheduleDTO,

@@ -64,8 +64,12 @@ export class ScheduleDatasourceImpl implements ScheduleDatasource {
     return schedules.map(ScheduleEntity.toEntity);
   }
 
-  async findAll(): Promise<ScheduleEntity[]> {
-    const schedules = await prisma.schedule.findMany();
+  async findAll(userId?: string): Promise<ScheduleEntity[]> {
+    const schedules = await prisma.schedule.findMany({
+      where: {
+        userId,
+      },
+    });
     return schedules.map(ScheduleEntity.toEntity);
   }
 

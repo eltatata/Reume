@@ -1,5 +1,5 @@
 import { ScheduleEntity } from '../../';
 
 export interface FindAllSchedulesUseCase {
-  execute: () => Promise<ScheduleEntity[]>;
+  execute: (userId?: string) => Promise<ScheduleEntity[]>;
 }

@@ -44,6 +44,6 @@ describe('FindAllSchedules', () => {
     const result = await findAllSchedules.execute();
 
     expect(result).toEqual(schedules);
-    expect(scheduleRepository.findAll).toHaveBeenCalledWith();
+    expect(scheduleRepository.findAll).toHaveBeenCalledWith(undefined);
   });
 });

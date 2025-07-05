@@ -24,8 +24,8 @@ export class ScheduleRepositoryImpl implements ScheduleRepository {
     return this.scheduleDatasource.findByDate(findAvailableTimesDto);
   }
 
-  findAll(): Promise<ScheduleEntity[]> {
-    return this.scheduleDatasource.findAll();
+  findAll(userId?: string): Promise<ScheduleEntity[]> {
+    return this.scheduleDatasource.findAll(userId);
   }
 
   create(

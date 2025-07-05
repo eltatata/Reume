@@ -32,7 +32,7 @@ export class ScheduleController {
 
   findAllSchedules = (req: RequestExtended, res: Response) => {
     new FindAllSchedules(this.scheduleRepository)
-      .execute()
+      .execute(req.user!.id)
       .then((data) => res.status(200).json(data))
       .catch((error) => ErrorHandlerService.handleError(error, res));
   };
