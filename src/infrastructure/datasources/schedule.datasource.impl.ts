@@ -1,6 +1,7 @@
 import { prisma } from '../../data/prisma.connection';
 import {
   CreateScheduleDTO,
+  FindAvailableTimesDTO,
   ScheduleDatasource,
   ScheduleEntity,
   UpdateScheduleDTO,
@@ -36,6 +37,30 @@ export class ScheduleDatasourceImpl implements ScheduleDatasource {
         },
       },
     });
+    return schedules.map(ScheduleEntity.toEntity);
+  }
+
+  async findByDate(
+    findAvailableTimesDto: FindAvailableTimesDTO,
+  ): Promise<ScheduleEntity[]> {
+    const [year, month, day] = findAvailableTimesDto.date
+      .split('-')
+      .map(Number);
+    const startOfDay = new Date(year, month - 1, day, 6, 0, 0, 0);
+    const endOfDay = new Date(year, month - 1, day, 18, 0, 0, 0);
+
+    const schedules = await prisma.schedule.findMany({
+      where: {
+        startTime: {
+          gte: startOfDay,
+          lte: endOfDay,
+        },
+      },
+      orderBy: {
+        startTime: 'asc',
+      },
+    });
+
     return schedules.map(ScheduleEntity.toEntity);
   }
 

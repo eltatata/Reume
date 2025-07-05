@@ -6,3 +6,4 @@ export * from './use-cases/schedule/create-schedule';
 export * from './use-cases/schedule/find-all-schedules';
 export * from './use-cases/schedule/update-schedule';
 export * from './use-cases/schedule/delete-schedule';
+export * from './use-cases/schedule/find-available-times';

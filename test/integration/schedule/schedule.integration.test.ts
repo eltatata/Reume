@@ -3,6 +3,17 @@ import { Server, AppRoutes } from '../../../src/presentation';
 import { prisma } from '../../../src/data/prisma.connection';
 import { User } from '../../../generated/prisma';
 
+const getNextWeekday = (daysFromToday: number = 1): Date => {
+  const date = new Date();
+  date.setDate(date.getDate() + daysFromToday);
+  // Ensure it's not a weekend
+  while (date.getDay() === 0 || date.getDay() === 6) {
+    date.setDate(date.getDate() + 1);
+  }
+
+  return date;
+};
+
 describe('Schedule Integration Tests', () => {
   let server: Server;
   let user: User;
@@ -94,6 +105,23 @@ describe('Schedule Integration Tests', () => {
           }),
         ]),
       );
+    });
+  });
+
+  describe('GET /api/schedule/available-times/:date', () => {
+    test('should get available times for a specific date', async () => {
+      const validDate = getNextWeekday();
+      const date = validDate.toISOString().split('T')[0];
+
+      const response = await request(server.app)
+        .get(`/api/schedule/available-times/${date}`)
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      expect(response.body.availableTimes).toHaveLength(49);
+      expect(response.body.availableTimes[0]).toBe('06:00');
+      expect(
+        response.body.availableTimes[response.body.availableTimes.length - 1],
+      ).toBe('18:00');
     });
   });
 
