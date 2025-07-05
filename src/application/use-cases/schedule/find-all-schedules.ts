@@ -10,9 +10,9 @@ const logger = loggerAdapter('FindAllSchedulesUseCase');
 export class FindAllSchedules implements FindAllSchedulesUseCase {
   constructor(private readonly scheduleRepository: ScheduleRepository) {}
 
-  async execute(): Promise<ScheduleEntity[]> {
+  async execute(userId?: string): Promise<ScheduleEntity[]> {
     logger.log(`Finding schedules`);
-    const schedules = await this.scheduleRepository.findAll();
+    const schedules = await this.scheduleRepository.findAll(userId);
     return schedules;
   }
 }
