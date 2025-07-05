@@ -70,7 +70,7 @@ describe('FindAvailableTimes', () => {
 
     const result = await findAvailableTimes.execute({ date });
 
-    // No debería incluir horarios entre 6:00-10:00 AM y 1:00-3:00 PM
+    // Should not include time slots between 6:00-10:00 AM and 1:00-3:00 PM
     expect(result).not.toContain('06:00');
     expect(result).not.toContain('06:15');
     expect(result).not.toContain('06:30');
@@ -110,12 +110,12 @@ describe('FindAvailableTimes', () => {
 
     const result = await findAvailableTimes.execute({ date });
 
-    // No debería incluir 8:00 y 9:00 (slots que están ocupados)
+    // Should not include 8:00 and 9:00 (slots that are occupied)
     expect(result).not.toContain('08:15');
     expect(result).not.toContain('08:30');
     expect(result).not.toContain('08:45');
 
-    // Debería incluir horarios antes y después
+    // Should include time slots before and after
     expect(result).toContain('08:00');
     expect(result).toContain('09:00');
 
