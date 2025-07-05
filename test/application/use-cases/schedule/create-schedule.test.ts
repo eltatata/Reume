@@ -5,6 +5,7 @@ describe('CreateSchedule', () => {
   const scheduleRepository = {
     findById: jest.fn(),
     findOverlapping: jest.fn(),
+    findByDate: jest.fn(),
     findAll: jest.fn(),
     create: jest.fn(),
     update: jest.fn(),
