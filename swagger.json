@@ -27,6 +27,10 @@
     {
       "name": "Schedule",
       "description": "Schedule endpoints"
+    },
+    {
+      "name": "User",
+      "description": "User endpoints"
     }
   ],
   "paths": {
@@ -893,6 +897,65 @@
           }
         }
       }
+    },
+    "/user/": {
+      "get": {
+        "summary": "Get all users",
+        "description": "Retrieves a list of all users in the system",
+        "tags": ["User"],
+        "security": [
+          { "bearerAuth": [] }
+        ],
+        "responses": {
+          "200": {
+            "description": "Users retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserWithSchedulesCountResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message",
+                      "example": "Unauthorized access"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message",
+                      "example": "Insufficient permissions"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1052,6 +1115,60 @@
             "type": "string",
             "description": "User's phone number (if provided)",
             "example": "+1234567890"
+          }
+        }
+      },
+      "UserWithSchedulesCountResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "User's unique identifier",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "User's first name",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "User's last name",
+            "example": "Doe"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User's email address",
+            "example": "john.doe@example.com"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["USER", "ADMIN"],
+            "description": "User's role",
+            "example": "USER"
+          },
+          "verified": {
+            "type": "boolean",
+            "description": "Whether the user is verified",
+            "example": false
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Account creation timestamp",
+            "example": "2024-03-30T12:00:00Z"
+          },
+          "phone": {
+            "type": "string",
+            "description": "User's phone number (if provided)",
+            "example": "+1234567890"
+          },
+          "schedulesCount": {
+            "type": "integer",
+            "description": "Number of schedules/appointments this user has",
+            "example": 5
           }
         }
       },
