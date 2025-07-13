@@ -2,6 +2,7 @@ export * from './routes';
 export * from './routes/auth.routes';
 export * from './routes/otp.routes';
 export * from './routes/schedule.routes';
+export * from './routes/user.routes';
 export * from './controllers/auth.controller';
 export * from './controllers/otp.controller';
 export * from './controllers/schedule.controller';
