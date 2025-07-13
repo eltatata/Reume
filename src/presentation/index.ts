@@ -5,6 +5,7 @@ export * from './routes/schedule.routes';
 export * from './controllers/auth.controller';
 export * from './controllers/otp.controller';
 export * from './controllers/schedule.controller';
+export * from './controllers/user.controller';
 export * from './server';
 export * from './services/error-handler.service';
 export * from './middlewares/auth.middleware';
