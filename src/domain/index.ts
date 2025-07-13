@@ -19,6 +19,7 @@ export * from './dtos/schedule/create-schedule';
 export * from './dtos/schedule/update-schedule';
 export * from './dtos/schedule/find-available-times';
 export * from './entities/user.entity';
+export * from './entities/user-with-schedules.entity';
 export * from './entities/otp.entity';
 export * from './entities/schedule.entity';
 export * from './datasources/user.datasource';

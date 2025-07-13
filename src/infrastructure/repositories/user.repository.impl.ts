@@ -1,5 +1,6 @@
 import {
   UserEntity,
+  UserWithSchedulesEntity,
   UserRepository,
   UserDatasource,
   RegisterUserDto,
@@ -17,7 +18,7 @@ export class UserRepositoryImpl implements UserRepository {
     return this.userDataSource.findById(id);
   }
 
-  findAll(): Promise<UserEntity[]> {
+  findAll(): Promise<UserWithSchedulesEntity[]> {
     return this.userDataSource.findAll();
   }
 

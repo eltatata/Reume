@@ -1,6 +1,7 @@
 import { prisma } from '../../data/prisma.connection';
 import {
   UserEntity,
+  UserWithSchedulesEntity,
   UserDatasource,
   RegisterUserDto,
   UpdateUserDto,
@@ -25,9 +26,23 @@ export class UserDatasourceImpl implements UserDatasource {
     return user ? UserEntity.toEntity(user) : null;
   }
 
-  async findAll(): Promise<UserEntity[]> {
-    const users = await prisma.user.findMany();
-    return users.map((user) => UserEntity.toEntity(user));
+  async findAll(): Promise<UserWithSchedulesEntity[]> {
+    const users = await prisma.user.findMany({
+      include: {
+        _count: {
+          select: {
+            schedules: true,
+          },
+        },
+      },
+    });
+
+    return users.map((user) => {
+      return UserWithSchedulesEntity.toEntity({
+        ...user,
+        schedulesCount: user._count.schedules,
+      });
+    });
   }
 
   async create(registerUserDto: RegisterUserDto): Promise<UserEntity> {
