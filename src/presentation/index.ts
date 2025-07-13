@@ -9,3 +9,4 @@ export * from './controllers/user.controller';
 export * from './server';
 export * from './services/error-handler.service';
 export * from './middlewares/auth.middleware';
+export * from './middlewares/role.middleware';

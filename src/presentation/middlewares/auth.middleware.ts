@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
-import { CustomError } from '../../domain';
+import { CustomError, UserRole } from '../../domain';
 import { jwtAdapter } from '../../config/';
 import { prisma } from '../../data/prisma.connection';
 
 export interface RequestExtended extends Request {
-  user?: { id: string };
+  user?: { id: string; role: UserRole };
 }
 
 export class AuthMiddleware {
@@ -42,7 +42,7 @@ export class AuthMiddleware {
         return;
       }
 
-      req.user = { id: user.id };
+      req.user = { id: user.id, role: user.role as UserRole };
 
       next();
     } catch {
