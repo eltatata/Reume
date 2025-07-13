@@ -10,6 +10,7 @@ export * from './interfaces/schedule/find-all-schedules.interfaces';
 export * from './interfaces/schedule/update-schedule.interfaces';
 export * from './interfaces/schedule/delete-schedule.interfaces';
 export * from './interfaces/schedule/find-available-times.interfaces';
+export * from './interfaces/user/find-all-users.interfaces';
 export * from './dtos/auth/register-user';
 export * from './dtos/auth/login-user';
 export * from './dtos/user/update-user';
