@@ -66,7 +66,9 @@ describe('FindAvailableTimesDTO', () => {
 
   test('should return error because date is in the past', () => {
     const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
+    do {
+      yesterday.setDate(yesterday.getDate() - 1);
+    } while (yesterday.getDay() === 0 || yesterday.getDay() === 6);
 
     const data = {
       date: yesterday.toISOString().split('T')[0],
