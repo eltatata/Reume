@@ -5,63 +5,92 @@ import {
   LoginUserUseCaseResponse,
 } from '../../../../src/domain';
 import { LoginUser } from '../../../../src/application';
-import { MockUserRepository, MockUserDatasource } from '../../../mocks';
 
 describe('LoginUser', () => {
-  let loginUser: LoginUser;
-
-  let userRepository: MockUserRepository;
-  let userDatasource: MockUserDatasource;
+  const userRepository = {
+    findByEmail: jest.fn(),
+    findById: jest.fn(),
+    update: jest.fn(),
+    findAll: jest.fn(),
+    create: jest.fn(),
+    delete: jest.fn(),
+  };
+  const loginUser = new LoginUser(userRepository);
 
   beforeEach(() => {
-    userDatasource = new MockUserDatasource();
-    userRepository = new MockUserRepository(userDatasource);
-
-    loginUser = new LoginUser(userRepository);
+    jest.clearAllMocks();
   });
 
-  describe('execute', () => {
-    test('should log in a user successfully', async () => {
-      const loginUserDto: LoginUserDto = {
-        email: 'john.doe@example.com',
-        password: 'password123',
-      };
+  test('should log in a user successfully', async () => {
+    const loginUserData = {
+      email: 'john.doe@example.com',
+      password: 'password123',
+    };
 
-      const loggedInUser = (await loginUser.execute(
-        loginUserDto,
-      )) as LoginUserUseCaseResponse;
+    const { validatedData } = LoginUserDto.create(loginUserData);
 
-      expect(loggedInUser).toBeDefined();
-      expect(loggedInUser.token).toBeDefined();
-      expect(loggedInUser.user.id).toBeDefined();
-      expect(loggedInUser.user.firstName).toBe('John');
-      expect(loggedInUser.user.lastName).toBe('Doe');
-      expect(loggedInUser.user.email).toBe('john.doe@example.com');
-      expect(loggedInUser.user.phone).toBe('+1234567890');
-      expect(loggedInUser.user.role).toBe(UserRole.USER);
-      expect(loggedInUser.user.verified).toBe(true);
+    userRepository.findByEmail.mockResolvedValue({
+      id: '123e4567-e89b-12d3-a456-426614174000',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john.doe@example.com',
+      password: '$2a$10$u8otbdIm0sWuTHCZIu7njO9hjSW4XR6mSCXI2LduOE8dWPEsKP3dm',
+      phone: '+1234567890',
+      role: UserRole.USER,
+      verified: true,
     });
 
-    test('should throw an error if user is not found', async () => {
-      const loginUserDto: LoginUserDto = {
-        email: 'non.existent@example.com',
-        password: 'password123',
-      };
+    const result = (await loginUser.execute(
+      validatedData!,
+    )) as LoginUserUseCaseResponse;
 
-      await expect(loginUser.execute(loginUserDto)).rejects.toThrow(
-        CustomError.notFound('User not found'),
-      );
+    expect(result).toBeDefined();
+    expect(result.token).toBeDefined();
+    expect(result.user.id).toBeDefined();
+    expect(result.user.firstName).toBe('John');
+    expect(result.user.lastName).toBe('Doe');
+    expect(result.user.email).toBe('john.doe@example.com');
+    expect(result.user.phone).toBe('+1234567890');
+    expect(result.user.role).toBe(UserRole.USER);
+    expect(result.user.verified).toBe(true);
+  });
+
+  test('should throw an error if user is not found', async () => {
+    const loginUserData = {
+      email: 'non.existent@example.com',
+      password: 'password123',
+    };
+
+    const { validatedData } = LoginUserDto.create(loginUserData);
+
+    userRepository.findByEmail.mockResolvedValue(null);
+
+    await expect(loginUser.execute(validatedData!)).rejects.toThrow(
+      CustomError.notFound('User not found'),
+    );
+  });
+
+  test('should throw an error if password is invalid', async () => {
+    const loginUserData = {
+      email: 'john.doe@example.com',
+      password: 'wrongpassword',
+    };
+
+    const { validatedData } = LoginUserDto.create(loginUserData);
+
+    userRepository.findByEmail.mockResolvedValue({
+      id: '123e4567-e89b-12d3-a456-426614174000',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john.doe@example.com',
+      password: '$2a$10$GM2sj.P6DdP3M10bMHwpfOG3ankX1gDa2vcRMZ5M3TwqSUnfPKOt.', // value: otherpassword
+      phone: '+1234567890',
+      role: UserRole.USER,
+      verified: true,
     });
 
-    test('should throw an error if password is invalid', async () => {
-      const loginUserDto: LoginUserDto = {
-        email: 'john.doe@example.com',
-        password: 'wrongpassword',
-      };
-
-      await expect(loginUser.execute(loginUserDto)).rejects.toThrow(
-        CustomError.unauthorized('Invalid password'),
-      );
-    });
+    await expect(loginUser.execute(validatedData!)).rejects.toThrow(
+      CustomError.unauthorized('Invalid password'),
+    );
   });
 });

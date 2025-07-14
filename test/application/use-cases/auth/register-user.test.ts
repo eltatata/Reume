@@ -1,81 +1,98 @@
 import { UserRole, RegisterUserDto, CustomError } from '../../../../src/domain';
 import { RegisterUser } from '../../../../src/application';
-import {
-  MockUserRepository,
-  MockUserDatasource,
-  MockOtpRepository,
-  MockOtpDatasource,
-  MockEmailService,
-} from '../../../mocks';
 
 describe('RegisterUser', () => {
-  let registerUser: RegisterUser;
+  const emailService = {
+    sendVerificationEmail: jest.fn(),
+  };
 
-  let emailService: MockEmailService;
+  const otpRepository = {
+    findByUserId: jest.fn(),
+    create: jest.fn(),
+    markAsUsed: jest.fn(),
+  };
 
-  let otpRepository: MockOtpRepository;
-  let otpDatasource: MockOtpDatasource;
+  const userRepository = {
+    findByEmail: jest.fn(),
+    findById: jest.fn(),
+    update: jest.fn(),
+    findAll: jest.fn(),
+    create: jest.fn(),
+    delete: jest.fn(),
+  };
 
-  let userRepository: MockUserRepository;
-  let userDatasource: MockUserDatasource;
+  const registerUser = new RegisterUser(
+    userRepository,
+    otpRepository,
+    emailService,
+  );
 
   beforeEach(() => {
-    emailService = new MockEmailService();
-
-    otpDatasource = new MockOtpDatasource();
-    otpRepository = new MockOtpRepository(otpDatasource);
-
-    userDatasource = new MockUserDatasource();
-    userRepository = new MockUserRepository(userDatasource);
-
-    registerUser = new RegisterUser(
-      userRepository,
-      otpRepository,
-      emailService,
-    );
+    jest.clearAllMocks();
   });
 
-  describe('execute', () => {
-    test('should create a new user successfully', async () => {
-      const newUserDto: RegisterUserDto = {
-        firstname: 'Jane',
-        lastname: 'Doe',
-        email: 'jane.doe@example.com',
-        password: 'password123',
-        phone: '+1234567890',
-      };
+  test('should create a new user successfully', async () => {
+    const newUserData = {
+      firstname: 'Jane',
+      lastname: 'Doe',
+      email: 'jane.doe@example.com',
+      password: 'mySecurePassword123!',
+      role: UserRole.USER,
+      verified: false,
+      createdAt: new Date(),
+      phone: '+1234567890',
+    };
 
-      const createdUser = await registerUser.execute(newUserDto);
+    const { validatedData } = RegisterUserDto.create(newUserData);
 
-      expect(createdUser).toBeDefined();
-      expect(createdUser.id).toBeDefined();
-      expect(createdUser.firstName).toBe('Jane');
-      expect(createdUser.lastName).toBe('Doe');
-      expect(createdUser.email).toBe('jane.doe@example.com');
-      expect(createdUser.phone).toBe('+1234567890');
-      expect(createdUser.role).toBe(UserRole.USER);
-      expect(createdUser.password).toBeUndefined();
+    userRepository.findByEmail.mockResolvedValue(null);
+    userRepository.create.mockResolvedValue({
+      id: '123e4567-e89b-12d3-a456-426614174000',
+      firstName: 'Jane',
+      lastName: 'Doe',
+      email: 'jane.doe@example.com',
+      role: 'USER',
+      verified: false,
+      createdAt: '2024-03-30T12:00:00Z',
+      phone: '+1234567890',
     });
 
-    test('should throw an error when the user already exists', async () => {
-      const newUserDto: RegisterUserDto = {
-        firstname: 'Jane',
-        lastname: 'Doe',
-        email: 'jane.doe@example.com',
-        password: 'password123',
-        phone: '+1234567890',
-      };
+    const createdUser = await registerUser.execute(validatedData!);
 
-      await registerUser.execute(newUserDto);
+    expect(createdUser).toBeDefined();
+    expect(createdUser.id).toBeDefined();
+    expect(createdUser.firstName).toBe('Jane');
+    expect(createdUser.lastName).toBe('Doe');
+    expect(createdUser.email).toBe('jane.doe@example.com');
+    expect(createdUser.phone).toBe('+1234567890');
+    expect(createdUser.role).toBe(UserRole.USER);
+    expect(createdUser.password).toBeUndefined();
+  });
 
-      await expect(registerUser.execute(newUserDto)).rejects.toThrow(
-        CustomError.conflict('User already exists'),
-      );
+  test('should throw an error when the user already exists', async () => {
+    const newUserData = {
+      firstname: 'Jane',
+      lastname: 'Doe',
+      email: 'jane.doe@example.com',
+      password: 'mySecurePassword123!',
+      phone: '+1234567890',
+    };
 
-      const allUsers = await userDatasource.findAll();
+    const { validatedData } = RegisterUserDto.create(newUserData);
 
-      expect(allUsers.length).toBe(2);
-      expect(allUsers[1].email).toBe('jane.doe@example.com');
+    userRepository.findByEmail.mockResolvedValue({
+      id: '123e4567-e89b-12d3-a456-426614174000',
+      firstName: 'Jane',
+      lastName: 'Doe',
+      email: 'jane.doe@example.com',
+      role: 'USER',
+      verified: false,
+      createdAt: '2024-03-30T12:00:00Z',
+      phone: '+1234567890',
     });
+
+    await expect(registerUser.execute(validatedData!)).rejects.toThrow(
+      CustomError.conflict('User already exists'),
+    );
   });
 });
