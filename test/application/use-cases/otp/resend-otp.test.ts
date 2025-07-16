@@ -1,83 +1,117 @@
 import { ResendOtpDto, CustomError } from '../../../../src/domain';
 import { ResendOtp } from '../../../../src/application';
-import {
-  MockUserRepository,
-  MockUserDatasource,
-  MockOtpRepository,
-  MockOtpDatasource,
-  MockEmailService,
-} from '../../../mocks';
 
 describe('ResendOtp', () => {
-  jest.clearAllMocks();
+  const emailService = {
+    sendVerificationEmail: jest.fn(),
+  };
 
-  let resendOtp: ResendOtp;
+  const otpRepository = {
+    findByUserId: jest.fn(),
+    create: jest.fn(),
+    markAsUsed: jest.fn(),
+  };
 
-  let emailService: MockEmailService;
+  const userRepository = {
+    findByEmail: jest.fn(),
+    findById: jest.fn(),
+    update: jest.fn(),
+    findAll: jest.fn(),
+    create: jest.fn(),
+    delete: jest.fn(),
+  };
 
-  let otpRepository: MockOtpRepository;
-  let otpDatasource: MockOtpDatasource;
-
-  let userRepository: MockUserRepository;
-  let userDatasource: MockUserDatasource;
+  const resendOtp = new ResendOtp(otpRepository, userRepository, emailService);
 
   beforeEach(() => {
-    emailService = new MockEmailService();
-
-    otpDatasource = new MockOtpDatasource();
-    otpRepository = new MockOtpRepository(otpDatasource);
-
-    userDatasource = new MockUserDatasource();
-    userRepository = new MockUserRepository(userDatasource);
-
-    resendOtp = new ResendOtp(otpRepository, userRepository, emailService);
-
-    jest.spyOn(resendOtp, 'execute');
+    jest.clearAllMocks();
   });
 
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
+  test('should resend OTP successfully', async () => {
+    const resendOtpData = {
+      email: 'alice.smith@example.com',
+    };
 
-  describe('execute', () => {
-    test('should resend OTP successfully', async () => {
-      userRepository.create({
-        firstname: 'Alice',
-        lastname: 'Smith',
-        email: 'alice.smith@example.com',
-        password: 'password123',
-        phone: '+1234567890',
-      });
+    const { validatedData } = ResendOtpDto.create(resendOtpData);
 
-      const resendOtpDto: ResendOtpDto = {
-        email: 'alice.smith@example.com',
-      };
-
-      expect(await resendOtp.execute(resendOtpDto)).toBeUndefined();
+    userRepository.findByEmail.mockResolvedValue({
+      id: '123e4567-e89b-12d3-a456-426614174000',
+      firstName: 'Alice',
+      lastName: 'Smith',
+      email: 'alice.smith@example.com',
+      password: 'password123',
+      phone: '+1234567890',
     });
+
+    expect(await resendOtp.execute(validatedData!)).toBeUndefined();
   });
 
   test('should throw error if user is not found', async () => {
-    const resendOtpDto: ResendOtpDto = {
+    const resendOtpData = {
       email: 'nonexistent@example.com',
     };
 
-    await expect(resendOtp.execute(resendOtpDto)).rejects.toThrow(CustomError);
+    const { validatedData } = ResendOtpDto.create(resendOtpData);
+
+    userRepository.findByEmail.mockResolvedValue(null);
+
+    await expect(resendOtp.execute(validatedData!)).rejects.toThrow(
+      CustomError.notFound('User not found'),
+    );
   });
 
   test('should throw error if user is already verified', async () => {
-    const resendOtpDto: ResendOtpDto = {
+    const resendOtpData = {
       email: 'verified@example.com',
     };
 
-    await expect(resendOtp.execute(resendOtpDto)).rejects.toThrow(CustomError);
+    const { validatedData } = ResendOtpDto.create(resendOtpData);
+
+    userRepository.findByEmail.mockResolvedValue({
+      id: '123e4567-e89b-12d3-a456-426614174000',
+      firstName: 'Alice',
+      lastName: 'Smith',
+      email: 'verified@example.com',
+      password: 'password123',
+      phone: '+1234567890',
+      verified: true,
+    });
+
+    await expect(resendOtp.execute(validatedData!)).rejects.toThrow(
+      CustomError.conflict('User already verified'),
+    );
   });
 
   test('should throw error if OTP request limit is exceeded', async () => {
-    const resendOtpDto: ResendOtpDto = {
+    const resendOtpData = {
       email: 'limit@example.com',
     };
 
-    await expect(resendOtp.execute(resendOtpDto)).rejects.toThrow(CustomError);
+    const { validatedData } = ResendOtpDto.create(resendOtpData);
+
+    userRepository.findByEmail.mockResolvedValue({
+      id: '123e4567-e89b-12d3-a456-426614174000',
+      firstName: 'Alice',
+      lastName: 'Smith',
+      email: 'limit@example.com',
+      password: 'password123',
+      phone: '+1234567890',
+    });
+    otpRepository.findByUserId.mockResolvedValue({
+      id: 'otp-id',
+      userId: '123e4567-e89b-12d3-a456-426614174000',
+      otp: 'hashed_otp',
+      createdAt: new Date(Date.now() - 30 * 1000),
+    });
+    otpRepository.create.mockResolvedValue({
+      id: 'new-otp-id',
+      userId: '123e4567-e89b-12d3-a456-426614174000',
+      otp: 'new_hashed_otp',
+      createdAt: new Date(),
+    });
+
+    await expect(resendOtp.execute(validatedData!)).rejects.toThrow(
+      CustomError.tooManyRequests('Please wait before requesting a new OTP'),
+    );
   });
 });

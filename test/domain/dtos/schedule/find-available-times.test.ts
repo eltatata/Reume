@@ -11,14 +11,6 @@ const getNextWeekday = (daysFromToday: number = 1): Date => {
   return date;
 };
 
-const getNextWeekendDay = (dayOfWeek: 0 | 6): Date => {
-  const date = new Date();
-  while (date.getDay() !== dayOfWeek) {
-    date.setDate(date.getDate() + 1);
-  }
-  return date;
-};
-
 describe('FindAvailableTimesDTO', () => {
   test('should create a valid FindAvailableTimesDTO with date only', () => {
     const tomorrow = getNextWeekday();
@@ -65,11 +57,8 @@ describe('FindAvailableTimesDTO', () => {
   });
 
   test('should return error because date is in the past', () => {
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-
     const data = {
-      date: yesterday.toISOString().split('T')[0],
+      date: '2024-01-01',
     };
 
     const result = FindAvailableTimesDTO.create(data);
@@ -83,10 +72,8 @@ describe('FindAvailableTimesDTO', () => {
   });
 
   test('should return error because date is a weekend (Saturday)', () => {
-    const saturday = getNextWeekendDay(6);
-
     const data = {
-      date: saturday.toISOString().split('T')[0],
+      date: '2025-07-12',
     };
 
     const result = FindAvailableTimesDTO.create(data);
@@ -100,10 +87,8 @@ describe('FindAvailableTimesDTO', () => {
   });
 
   test('should return error because date is a weekend (Sunday)', () => {
-    const sunday = getNextWeekendDay(0);
-
     const data = {
-      date: sunday.toISOString().split('T')[0],
+      date: '2025-07-13',
     };
 
     const result = FindAvailableTimesDTO.create(data);
