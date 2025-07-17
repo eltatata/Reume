@@ -19,6 +19,13 @@ export class UserRoutes {
       userController.findAllUsers,
     );
 
+    router.get(
+      '/:id',
+      AuthMiddleware.validateJWT,
+      RoleMiddleware.validateRole([UserRole.ADMIN, UserRole.USER]),
+      userController.findOneUser,
+    );
+
     return router;
   }
 }
