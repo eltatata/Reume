@@ -19,11 +19,18 @@ export class UserDatasourceImpl implements UserDatasource {
 
   async findById(id: string): Promise<UserEntity | null> {
     const user = await prisma.user.findUnique({
-      where: {
-        id,
+      where: { id },
+      include: {
+        schedules: true,
       },
     });
-    return user ? UserEntity.toEntity(user) : null;
+
+    if (!user) return null;
+
+    return UserWithSchedulesEntity.toEntity({
+      ...user,
+      schedulesCount: user.schedules.length,
+    });
   }
 
   async findAll(): Promise<UserWithSchedulesEntity[]> {
