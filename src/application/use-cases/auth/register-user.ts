@@ -49,8 +49,10 @@ export class RegisterUser implements RegisterUserUseCase {
     );
     logger.log(`Verification email sent to: ${user.email}`);
 
-    delete user.password;
+    // delete user.password;
+    const userWithoutPassword = { ...user };
+    delete userWithoutPassword.password;
 
-    return user;
+    return userWithoutPassword;
   }
 }
