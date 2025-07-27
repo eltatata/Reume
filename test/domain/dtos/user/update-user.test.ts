@@ -6,7 +6,7 @@ describe('UpdateUserDto', () => {
       firstname: 'John',
       lastname: 'Doe',
       email: 'john.doe@example.com',
-      password: 'newPassword123',
+      password: 'mySecurePassword123!',
       role: UserRole.USER,
       verified: true,
       phone: '+1234567890',
@@ -122,7 +122,7 @@ describe('UpdateUserDto', () => {
       firstname: '  John  ',
       lastname: '  Doe  ',
       email: '  john@example.com  ',
-      password: '  password123  ',
+      password: '  mySecurePassword123!  ',
       phone: '  +1234567890  ',
     };
 
@@ -132,7 +132,7 @@ describe('UpdateUserDto', () => {
     expect(result?.validatedData?.firstname).toBe('John');
     expect(result?.validatedData?.lastname).toBe('Doe');
     expect(result?.validatedData?.email).toBe('john@example.com');
-    expect(result?.validatedData?.password).toBe('password123');
+    expect(result?.validatedData?.password).toBe('mySecurePassword123!');
     expect(result?.validatedData?.phone).toBe('+1234567890');
   });
 
