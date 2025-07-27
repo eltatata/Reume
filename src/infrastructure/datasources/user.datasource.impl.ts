@@ -72,7 +72,15 @@ export class UserDatasourceImpl implements UserDatasource {
   ): Promise<UserEntity | null> {
     const updatedUser = await prisma.user.update({
       where: { id },
-      data: updateUserDto,
+      data: {
+        firstName: updateUserDto.firstname,
+        lastName: updateUserDto.lastname,
+        email: updateUserDto.email,
+        password: updateUserDto.password,
+        role: updateUserDto.role,
+        phone: updateUserDto.phone,
+        verified: updateUserDto.verified,
+      },
     });
     return updatedUser ? UserEntity.toEntity(updatedUser) : null;
   }
