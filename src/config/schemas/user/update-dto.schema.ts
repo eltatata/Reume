@@ -37,6 +37,8 @@ export const updateUserSchema: z.ZodType<UpdateUserDto> = z.object({
   phone: z
     .string()
     .trim()
-    .regex(/^\+?[0-9]{6,15}$/, 'Invalid phone number format')
-    .optional(),
+    .optional()
+    .refine((val) => !val || /^\+?[0-9]{6,15}$/.test(val), {
+      message: 'Invalid phone number format',
+    }),
 });
