@@ -57,7 +57,7 @@ export class RequestUpdateUserEmail implements RequestUpdateUserEmailUseCase {
     });
     if (!token) throw CustomError.internalServer('Failed to generate token');
 
-    const verificationLink = `${envs.ORIGIN_URL}/verify-email?token=${token}`;
+    const verificationLink = `${envs.ORIGIN_URL}/api/user/update-email?token=${token}`;
     await this.emailService.sendEmailVerificationLink(email, verificationLink);
 
     logger.log(
