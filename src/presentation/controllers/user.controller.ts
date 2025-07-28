@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { envs } from '../../config';
 import { ErrorHandlerService, RequestExtended } from '../';
 import { UserRepository, UpdateUserDto, EmailService } from '../../domain';
 import {
@@ -6,6 +7,7 @@ import {
   FindOneUser,
   UpdateUser,
   RequestUpdateUserEmail,
+  UpdateUserEmail,
 } from '../../application';
 
 export class UserController {
@@ -60,6 +62,22 @@ export class UserController {
     new RequestUpdateUserEmail(this.userRepository, this.emailService)
       .execute(id, userId, role, validatedData!)
       .then((data) => res.status(200).json(data))
+      .catch((error) => ErrorHandlerService.handleError(error, res));
+  };
+
+  updateUserEmail = (req: Request, res: Response) => {
+    const token = req.query.token as string;
+
+    if (!token) {
+      res.status(400).json({ errors: { token: 'Token is required' } });
+      return;
+    }
+
+    new UpdateUserEmail(this.userRepository)
+      .execute(token)
+      .then(() => {
+        res.redirect(`${envs.REUME_FRONTEND_URL}/login?message=email-updated`);
+      })
       .catch((error) => ErrorHandlerService.handleError(error, res));
   };
 }
