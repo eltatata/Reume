@@ -1299,6 +1299,92 @@
           }
         }
       }
+    },
+    "/user/update-email": {
+      "get": {
+        "summary": "Confirm email update",
+        "description": "Confirms and applies the email update using a verification token sent to the user's new email address. This endpoint is typically accessed via a link in the confirmation email.",
+        "tags": ["User"],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "required": true,
+            "description": "The verification token sent to the user's new email address",
+            "schema": {
+              "type": "string",
+              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            }
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Email updated successfully - Redirects to frontend login page",
+            "headers": {
+              "Location": {
+                "description": "Redirect URL to frontend login page",
+                "schema": {
+                  "type": "string",
+                  "example": "http://frontend-url/login?message=email-updated"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or missing token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "object",
+                      "description": "Validation errors",
+                      "example": {
+                        "token": "Token is required"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or expired token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message",
+                      "example": "Invalid or expired token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message",
+                      "example": "User not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
