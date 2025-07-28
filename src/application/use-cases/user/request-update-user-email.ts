@@ -36,15 +36,20 @@ export class RequestUpdateUserEmail implements RequestUpdateUserEmailUseCase {
     }
 
     const { email, password } = updateUserDto;
-    if (!email || !password) {
-      throw CustomError.badRequest('Email and password are required');
+    if (!email) {
+      throw CustomError.badRequest('Email is required');
     }
 
     const user = await this.userRepository.findById(id);
     if (!user) throw CustomError.notFound('User not found');
 
-    const isPasswordValid = bcryptAdapter.compare(password, user.password!);
-    if (!isPasswordValid) throw CustomError.unauthorized('Invalid password');
+    if (role !== UserRole.ADMIN) {
+      if (!password) {
+        throw CustomError.badRequest('Password is required');
+      }
+      const isPasswordValid = bcryptAdapter.compare(password, user.password!);
+      if (!isPasswordValid) throw CustomError.unauthorized('Invalid password');
+    }
 
     const emailExists = await this.userRepository.findByEmail(email);
     if (emailExists && emailExists.id !== id) {
