@@ -8,6 +8,7 @@ import {
   UpdateUser,
   RequestUpdateUserEmail,
   UpdateUserEmail,
+  UpdateUserRole,
 } from '../../application';
 
 export class UserController {
@@ -78,6 +79,21 @@ export class UserController {
       .then(() => {
         res.redirect(`${envs.REUME_FRONTEND_URL}/login?message=email-updated`);
       })
+      .catch((error) => ErrorHandlerService.handleError(error, res));
+  };
+
+  updateUserRole = (req: Request, res: Response) => {
+    const id = req.params.id;
+    const { errors, validatedData } = UpdateUserDto.create(req.body);
+
+    if (errors) {
+      res.status(400).json({ errors });
+      return;
+    }
+
+    new UpdateUserRole(this.userRepository)
+      .execute(id, validatedData!)
+      .then((data) => res.status(200).json(data))
       .catch((error) => ErrorHandlerService.handleError(error, res));
   };
 }
