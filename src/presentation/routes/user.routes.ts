@@ -34,6 +34,13 @@ export class UserRoutes {
       userController.findOneUser,
     );
 
+    router.post(
+      '/:id/email',
+      AuthMiddleware.validateJWT,
+      RoleMiddleware.validateRole([UserRole.ADMIN, UserRole.USER]),
+      userController.requestUpdateUserEmail,
+    );
+
     router.put(
       '/:id',
       AuthMiddleware.validateJWT,
@@ -41,11 +48,11 @@ export class UserRoutes {
       userController.updateUser,
     );
 
-    router.post(
-      '/:id/email',
+    router.put(
+      '/:id/role',
       AuthMiddleware.validateJWT,
-      RoleMiddleware.validateRole([UserRole.ADMIN, UserRole.USER]),
-      userController.requestUpdateUserEmail,
+      RoleMiddleware.validateRole([UserRole.ADMIN]),
+      userController.updateUserRole,
     );
 
     return router;
