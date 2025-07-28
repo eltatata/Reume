@@ -15,6 +15,7 @@ export * from './interfaces/user/find-one-user.interfaces';
 export * from './interfaces/user/update-user.interfaces';
 export * from './interfaces/user/request-update-user-email.interfaces';
 export * from './interfaces/user/update-user-email.interfaces';
+export * from './interfaces/user/update-user-role.interfaces';
 export * from './dtos/auth/register-user';
 export * from './dtos/auth/login-user';
 export * from './dtos/user/update-user';
