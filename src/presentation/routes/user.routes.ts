@@ -25,6 +25,8 @@ export class UserRoutes {
       userController.findAllUsers,
     );
 
+    router.get('/update-email', userController.updateUserEmail);
+
     router.get(
       '/:id',
       AuthMiddleware.validateJWT,
