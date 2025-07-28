@@ -27,13 +27,15 @@ export class UpdateUser implements UpdateUserUseCase {
       );
     }
 
+    const user = await this.userRepository.findById(id);
+    if (!user) throw CustomError.notFound('User not found');
+
     const { firstname, lastname, phone } = updateUserDto;
     const updatedUser = await this.userRepository.update(id, {
       firstname,
       lastname,
       phone,
     });
-    if (!updatedUser) throw CustomError.notFound('User not found');
 
     logger.log(`User updated successfully: ${id}`);
 
