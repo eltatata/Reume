@@ -1,10 +1,18 @@
 import { Request, Response } from 'express';
 import { ErrorHandlerService, RequestExtended } from '../';
-import { UserRepository, UpdateUserDto } from '../../domain';
-import { FindAllUsers, FindOneUser, UpdateUser } from '../../application';
+import { UserRepository, UpdateUserDto, EmailService } from '../../domain';
+import {
+  FindAllUsers,
+  FindOneUser,
+  UpdateUser,
+  RequestUpdateUserEmail,
+} from '../../application';
 
 export class UserController {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly emailService: EmailService,
+  ) {}
 
   findAllUsers = (req: Request, res: Response) => {
     new FindAllUsers(this.userRepository)
@@ -34,6 +42,22 @@ export class UserController {
     }
 
     new UpdateUser(this.userRepository)
+      .execute(id, userId, role, validatedData!)
+      .then((data) => res.status(200).json(data))
+      .catch((error) => ErrorHandlerService.handleError(error, res));
+  };
+
+  requestUpdateUserEmail = (req: RequestExtended, res: Response) => {
+    const id = req.params.id;
+    const { id: userId, role } = req.user!;
+    const { errors, validatedData } = UpdateUserDto.create(req.body);
+
+    if (errors) {
+      res.status(400).json({ errors });
+      return;
+    }
+
+    new RequestUpdateUserEmail(this.userRepository, this.emailService)
       .execute(id, userId, role, validatedData!)
       .then((data) => res.status(200).json(data))
       .catch((error) => ErrorHandlerService.handleError(error, res));
