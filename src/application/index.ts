@@ -11,3 +11,4 @@ export * from './use-cases/user/find-all-users';
 export * from './use-cases/user/find-one-user';
 export * from './use-cases/user/update-user';
 export * from './use-cases/user/request-update-user-email';
+export * from './use-cases/user/update-user-email';
