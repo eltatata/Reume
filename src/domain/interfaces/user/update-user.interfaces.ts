@@ -5,6 +5,6 @@ export interface UpdateUserUseCase {
     id: string,
     userId: string,
     role: UserRole,
-    data: UpdateUserDto,
+    updateUserDto: UpdateUserDto,
   ): Promise<UserEntity | null>;
 }
