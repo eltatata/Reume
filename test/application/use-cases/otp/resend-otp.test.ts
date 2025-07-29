@@ -4,6 +4,7 @@ import { ResendOtp } from '../../../../src/application';
 describe('ResendOtp', () => {
   const emailService = {
     sendVerificationEmail: jest.fn(),
+    sendEmailVerificationLink: jest.fn(),
   };
 
   const otpRepository = {
