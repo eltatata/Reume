@@ -13,3 +13,4 @@ export * from './use-cases/user/update-user';
 export * from './use-cases/user/request-update-user-email';
 export * from './use-cases/user/update-user-email';
 export * from './use-cases/user/update-user-role';
+export * from './use-cases/user/delete-user';
