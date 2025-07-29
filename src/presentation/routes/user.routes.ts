@@ -55,6 +55,13 @@ export class UserRoutes {
       userController.updateUserRole,
     );
 
+    router.delete(
+      '/:id',
+      AuthMiddleware.validateJWT,
+      RoleMiddleware.validateRole([UserRole.ADMIN, UserRole.USER]),
+      userController.deleteUser,
+    );
+
     return router;
   }
 }
