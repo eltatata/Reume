@@ -9,6 +9,7 @@ import {
   RequestUpdateUserEmail,
   UpdateUserEmail,
   UpdateUserRole,
+  DeleteUser,
 } from '../../application';
 
 export class UserController {
@@ -94,6 +95,16 @@ export class UserController {
     new UpdateUserRole(this.userRepository)
       .execute(id, validatedData!)
       .then((data) => res.status(200).json(data))
+      .catch((error) => ErrorHandlerService.handleError(error, res));
+  };
+
+  deleteUser = (req: RequestExtended, res: Response) => {
+    const id = req.params.id;
+    const { id: userId, role } = req.user!;
+
+    new DeleteUser(this.userRepository)
+      .execute(id, userId, role)
+      .then(() => res.status(204).send())
       .catch((error) => ErrorHandlerService.handleError(error, res));
   };
 }
