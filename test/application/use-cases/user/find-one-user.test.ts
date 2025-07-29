@@ -46,7 +46,7 @@ describe('FindOneUser', () => {
         '123e4567-e89b-12d3-a456-426614174001',
         UserRole.ADMIN,
       ),
-    ).rejects.toThrow(/User not found/);
+    ).rejects.toThrow('User not found');
 
     expect(userRepository.findById).toHaveBeenCalledWith(
       '123e4567-e89b-12d3-a456-426614174001',
@@ -60,7 +60,7 @@ describe('FindOneUser', () => {
 
     await expect(
       findOneUser.execute(otherUserId, userId, role),
-    ).rejects.toThrow(/permission to access this user/);
+    ).rejects.toThrow('You do not have permission to access this user');
 
     expect(userRepository.findById).not.toHaveBeenCalled();
   });
