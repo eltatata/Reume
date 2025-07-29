@@ -34,7 +34,6 @@ describe('User Integration Tests', () => {
       },
     });
 
-    // Create regular user
     regularUser = await prisma.user.create({
       data: {
         firstName: 'Regular',
@@ -48,7 +47,6 @@ describe('User Integration Tests', () => {
       },
     });
 
-    // Login admin user
     const loginResponse = await request(server.app)
       .post('/api/auth/login')
       .send({
@@ -105,6 +103,72 @@ describe('User Integration Tests', () => {
           verified: regularUser.verified,
         }),
       );
+    });
+  });
+
+  describe('POST /api/user/:id/email', () => {
+    test('should request email update for user', async () => {
+      const response = await request(server.app)
+        .post(`/api/user/${regularUser.id}/email`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          email: 'newemail@example.com',
+          password: 'mySecurePassword123!',
+        });
+
+      expect(response.status).toBe(200);
+    });
+  });
+
+  describe('PUT /api/user/:id', () => {
+    test('should update user information', async () => {
+      const response = await request(server.app)
+        .put(`/api/user/${regularUser.id}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          firstname: 'Updated',
+          lastname: 'Name',
+          phone: '+1234567892',
+        });
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual(
+        expect.objectContaining({
+          id: regularUser.id,
+          firstName: 'Updated',
+          lastName: 'Name',
+          phone: '+1234567892',
+        }),
+      );
+    });
+  });
+
+  describe('PUT /api/user/:id/role', () => {
+    test('should update user role', async () => {
+      const response = await request(server.app)
+        .put(`/api/user/${regularUser.id}/role`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          role: 'ADMIN',
+        });
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual(
+        expect.objectContaining({
+          id: regularUser.id,
+          role: 'ADMIN',
+        }),
+      );
+    });
+  });
+
+  describe('DELETE /api/user/:id', () => {
+    test('should delete user', async () => {
+      const response = await request(server.app)
+        .delete(`/api/user/${regularUser.id}`)
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      expect(response.status).toBe(204);
     });
   });
 });
