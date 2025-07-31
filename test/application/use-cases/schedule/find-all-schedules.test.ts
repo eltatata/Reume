@@ -1,4 +1,4 @@
-import { ScheduleEntity } from '../../../../src/domain';
+import { ScheduleEntity, UserRole } from '../../../../src/domain';
 import { FindAllSchedules } from '../../../../src/application';
 
 describe('FindAllSchedules', () => {
@@ -41,7 +41,36 @@ describe('FindAllSchedules', () => {
 
     scheduleRepository.findAll.mockResolvedValue(schedules);
 
-    const result = await findAllSchedules.execute();
+    const result = await findAllSchedules.execute(
+      '123e4567-e89b-12d3-a456-426614174000',
+      UserRole.USER,
+    );
+
+    expect(result).toEqual(schedules);
+    expect(scheduleRepository.findAll).toHaveBeenCalledWith(
+      '123e4567-e89b-12d3-a456-426614174000',
+    );
+  });
+
+  test('should return all schedules for admin', async () => {
+    const schedules = [
+      new ScheduleEntity(
+        '123e4567-e89b-12d3-a456-426614174001',
+        '123e4567-e89b-12d3-a456-426614174000',
+        'Meeting',
+        '2025-05-24T11:30:00.000Z',
+        '2025-05-24T12:00:00.000Z',
+        new Date(),
+        new Date(),
+      ),
+    ];
+
+    scheduleRepository.findAll.mockResolvedValue(schedules);
+
+    const result = await findAllSchedules.execute(
+      '123e4567-e89b-12d3-a456-426614174000',
+      UserRole.ADMIN,
+    );
 
     expect(result).toEqual(schedules);
     expect(scheduleRepository.findAll).toHaveBeenCalledWith(undefined);

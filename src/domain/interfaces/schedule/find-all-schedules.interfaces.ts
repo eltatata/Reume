@@ -1,5 +1,5 @@
-import { ScheduleEntity } from '../../';
+import { ScheduleEntity, UserRole } from '../../';
 
 export interface FindAllSchedulesUseCase {
-  execute: (userId?: string) => Promise<ScheduleEntity[]>;
+  execute: (userId: string, role: UserRole) => Promise<ScheduleEntity[]>;
 }
