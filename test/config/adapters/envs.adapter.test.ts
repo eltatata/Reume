@@ -9,5 +9,8 @@ describe('envs', () => {
     expect(envs).toHaveProperty('POSTGRES_PASSWORD', expect.any(String));
     expect(envs).toHaveProperty('POSTGRES_DB', expect.any(String));
     expect(envs).toHaveProperty('RESEND_API_KEY', expect.any(String));
+    expect(envs).toHaveProperty('JWT_SECRET', expect.any(String));
+    expect(envs).toHaveProperty('REUME_FRONTEND_URL', expect.any(String));
+    expect(envs).toHaveProperty('ORIGIN_URL', expect.any(String));
   });
 });

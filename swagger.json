@@ -23,6 +23,14 @@
     {
       "name": "OTP",
       "description": "OTP endpoints"
+    },
+    {
+      "name": "Schedule",
+      "description": "Schedule endpoints"
+    },
+    {
+      "name": "User",
+      "description": "User endpoints"
     }
   ],
   "paths": {
@@ -304,6 +312,25 @@
                 }
               }
             }
+          },
+          "410": {
+            "description": "OTP expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message"
+                    }
+                  },
+                  "example": {
+                    "message": "OTP has expired"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -365,6 +392,1189 @@
                   },
                   "example": {
                     "message": "User not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "User already verified",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message"
+                    }
+                  },
+                  "example": {
+                    "message": "User already verified"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message"
+                    }
+                  },
+                  "example": {
+                    "message": "Too many requests"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/schedule/": {
+      "post": {
+        "summary": "Create a new schedule",
+        "description": "Creates a new schedule",
+        "tags": ["Schedule"],
+        "security": [
+          { "bearerAuth": [] }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateScheduleRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateScheduleRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Schedule created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScheduleResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message"
+                    }
+                  },
+                  "example": {
+                    "message": "Invalid schedule data"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message"
+                    }
+                  },
+                  "example": {
+                    "message": "Unauthorized access"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message"
+                    }
+                  },
+                  "example": {
+                    "message": "Conflict error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Get all schedules",
+        "description": "Retrieves all schedules",
+        "tags": ["Schedule"],
+        "security": [
+          { "bearerAuth": [] }
+        ],
+        "responses": {
+          "200": {
+            "description": "Schedules retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ScheduleResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message"
+                    }
+                  },
+                  "example": {
+                    "message": "Unauthorized access"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/schedule/available-times/{date}": {
+      "get": {
+        "summary": "Get available time slots for a specific date",
+        "description": "Returns available time slots (6AM to 6PM in 15-minute intervals) excluding already scheduled appointments. When updating an existing schedule, provide the schedule UUID in the schedule parameter to exclude it from conflict checking.",
+        "tags": ["Schedule"],
+        "security": [
+          { "bearerAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "date",
+            "in": "path",
+            "required": true,
+            "description": "Date in YYYY-MM-DD format",
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2025-06-15"
+            }
+          },
+          {
+            "name": "schedule",
+            "in": "query",
+            "required": false,
+            "description": "UUID of the schedule being updated. When provided, the system will exclude this specific schedule from conflict checking to allow updating it with overlapping times.",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Available times retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "availableTimes": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "description": "Time slot in HH:MM format",
+                        "example": "09:15"
+                      },
+                      "description": "Array of available time slots"
+                    }
+                  },
+                  "example": {
+                    "availableTimes": ["06:00", "06:15", "06:30", "10:00", "10:15", "15:00", "15:15", "17:45"]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid date format",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message"
+                    }
+                  },
+                  "example": {
+                    "message": "Invalid date format. Expected YYYY-MM-DD"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message"
+                    }
+                  },
+                  "example": {
+                    "message": "Unauthorized access"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/schedule/{id}": {
+      "put": {
+        "summary": "Update a schedule",
+        "description": "Updates an existing schedule",
+        "tags": ["Schedule"],
+        "security": [
+          { "bearerAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the schedule to update",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateScheduleRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateScheduleRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Schedule updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScheduleResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message"
+                    }
+                  },
+                  "example": {
+                    "message": "Invalid schedule data"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message"
+                    }
+                  },
+                  "example": {
+                    "message": "Unauthorized access"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message"
+                    }
+                  },
+                  "example": {
+                    "message": "You do not have permission to update this schedule"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Schedule not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message"
+                    }
+                  },
+                  "example": {
+                    "message": "Schedule not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message"
+                    }
+                  },
+                  "example": {
+                    "message": "Conflict error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a schedule",
+        "description": "Deletes a schedule by ID",
+        "tags": ["Schedule"],
+        "security": [
+          { "bearerAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the schedule to delete",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Schedule deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message"
+                    }
+                  },
+                  "example": {
+                    "message": "Unauthorized access"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message"
+                    }
+                  },
+                  "example": {
+                    "message": "You do not have permission to delete this schedule"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Schedule not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message"
+                    }
+                  },
+                  "example": {
+                    "message": "Schedule not found"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/": {
+      "get": {
+        "summary": "Get all users",
+        "description": "Retrieves a list of all users in the system",
+        "tags": ["User"],
+        "security": [
+          { "bearerAuth": [] }
+        ],
+        "responses": {
+          "200": {
+            "description": "Users retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserWithSchedulesCountResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message",
+                      "example": "Unauthorized access"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message",
+                      "example": "Insufficient permissions"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{id}": {
+      "get": {
+        "summary": "Get user by ID",
+        "description": "Retrieves information for a specific user by their ID",
+        "tags": ["User"],
+        "security": [
+          { "bearerAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The unique identifier of the user",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserWithSchedulesCountResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - No active session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message",
+                      "example": "Unauthorized access"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message",
+                      "example": "Insufficient permissions"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message",
+                      "example": "User not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update user information",
+        "description": "Updates the information of a specific user. Users can only update their own information unless they have admin role.",
+        "tags": ["User"],
+        "security": [
+          { "bearerAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The unique identifier of the user to update",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "object",
+                      "description": "Validation errors",
+                      "example": {
+                        "email": "Invalid email format",
+                        "phone": "Invalid phone number format"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - No active session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message",
+                      "example": "Unauthorized access"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions to update this user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message",
+                      "example": "You do not have permission to update this user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message",
+                      "example": "User not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete user",
+        "description": "Deletes a specific user and all related data (schedules, OTP verifications). Users can only delete their own account unless they have admin role.",
+        "tags": ["User"],
+        "security": [
+          { "bearerAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The unique identifier of the user to delete",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized - No active session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message",
+                      "example": "Unauthorized access"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions to delete this user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message",
+                      "example": "You do not have permission to delete this user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message",
+                      "example": "User not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{id}/email": {
+      "post": {
+        "summary": "Update user email",
+        "description": "Updates the email address of a specific user. Requires the current password for security verification. Users can only update their own email unless they have admin role.",
+        "tags": ["User"],
+        "security": [
+          { "bearerAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The unique identifier of the user to update",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserEmailRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserEmailRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User email updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "object",
+                      "description": "Validation errors",
+                      "example": {
+                        "email": "Invalid email format",
+                        "password": "Password is required"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - No active session or invalid password",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message",
+                      "example": "Invalid password"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions to update this user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message",
+                      "example": "You do not have permission to update this user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message",
+                      "example": "User not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Email already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message",
+                      "example": "Email already exists"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/update-email": {
+      "get": {
+        "summary": "Confirm email update",
+        "description": "Confirms and applies the email update using a verification token sent to the user's new email address. This endpoint is typically accessed via a link in the confirmation email.",
+        "tags": ["User"],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "required": true,
+            "description": "The verification token sent to the user's new email address",
+            "schema": {
+              "type": "string",
+              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            }
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Email updated successfully - Redirects to frontend login page",
+            "headers": {
+              "Location": {
+                "description": "Redirect URL to frontend login page",
+                "schema": {
+                  "type": "string",
+                  "example": "http://frontend-url/login?message=email-updated"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or missing token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "object",
+                      "description": "Validation errors",
+                      "example": {
+                        "token": "Token is required"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or expired token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message",
+                      "example": "Invalid or expired token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message",
+                      "example": "User not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{id}/role": {
+      "put": {
+        "summary": "Update user role",
+        "description": "Updates the role of a specific user. This endpoint can only be accessed by administrators to change user permissions.",
+        "tags": ["User"],
+        "security": [
+          { "bearerAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The unique identifier of the user whose role will be updated",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserRoleRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserRoleRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User role updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "object",
+                      "description": "Validation errors",
+                      "example": {
+                        "role": "Invalid role value. Must be USER or ADMIN"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - No active session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message",
+                      "example": "Unauthorized access"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Only administrators can update user roles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message",
+                      "example": "You do not have permission to update this user role"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message",
+                      "example": "User not found"
+                    }
                   }
                 }
               }
@@ -462,6 +1672,85 @@
           }
         }
       },
+      "CreateScheduleRequest": {
+        "type": "object",
+        "required": ["title", "startTime", "endTime"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Title of the schedule",
+            "example": "Meeting with client"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "time",
+            "description": "Start time of the schedule",
+            "example": "2025-05-23T12:30:00.000Z"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "time",
+            "description": "End time of the schedule",
+            "example": "2025-05-23T13:30:00.000Z"
+          }
+        }
+      },
+      "UpdateUserEmailRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User's new email address",
+            "example": "newemail@example.com"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "description": "User's current password for verification",
+            "example": "mySecurePassword123!",
+            "minLength": 5
+          }
+        }
+      },
+      "UpdateUserRequest": {
+        "type": "object",
+        "properties": {
+          "firstname": {
+            "type": "string",
+            "description": "User's first name",
+            "example": "Jane",
+            "minLength": 1,
+            "maxLength": 50
+          },
+          "lastname": {
+            "type": "string",
+            "description": "User's last name",
+            "example": "Smith",
+            "minLength": 1,
+            "maxLength": 50
+          },
+          "phone": {
+            "type": "string",
+            "description": "User's phone number",
+            "example": "+1234567890",
+            "pattern": "^\\+?[0-9]{6,15}$"
+          }
+        }
+      },
+      "UpdateUserRoleRequest": {
+        "type": "object",
+        "required": ["role"],
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": ["USER", "ADMIN"],
+            "description": "The new role to assign to the user",
+            "example": "ADMIN"
+          }
+        }
+      },
       "UserResponse": {
         "type": "object",
         "properties": {
@@ -511,6 +1800,60 @@
           }
         }
       },
+      "UserWithSchedulesCountResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "User's unique identifier",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "User's first name",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "User's last name",
+            "example": "Doe"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User's email address",
+            "example": "john.doe@example.com"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["USER", "ADMIN"],
+            "description": "User's role",
+            "example": "USER"
+          },
+          "verified": {
+            "type": "boolean",
+            "description": "Whether the user is verified",
+            "example": false
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Account creation timestamp",
+            "example": "2024-03-30T12:00:00Z"
+          },
+          "phone": {
+            "type": "string",
+            "description": "User's phone number (if provided)",
+            "example": "+1234567890"
+          },
+          "schedulesCount": {
+            "type": "integer",
+            "description": "Number of schedules/appointments this user has",
+            "example": 5
+          }
+        }
+      },
       "LoginUserResponse": {
         "type": "object",
         "properties": {
@@ -544,6 +1887,53 @@
             "example": "OTP resent successfully"
           }
         }
+      },
+      "ScheduleResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Schedule's unique identifier",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "title": {
+            "type": "string",
+            "description": "Title of the schedule",
+            "example": "Meeting with client"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "time",
+            "description": "Start time of the schedule",
+            "example": "2025-05-23T12:30:00.000Z"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "time",
+            "description": "End time of the schedule",
+            "example": "2025-05-23T13:30:00.000Z"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Schedule creation timestamp",
+            "example": "2025-05-23T16:07:05.056Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Schedule update timestamp",
+            "example": "2025-05-23T16:07:05.056Z"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "Bearer",
+        "bearerFormat": "JWT"
       }
     }
   }

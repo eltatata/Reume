@@ -1,10 +1,15 @@
-import { UserEntity } from '../';
+import {
+  UserEntity,
+  UserWithSchedulesEntity,
+  UpdateUserDto,
+  RegisterUserDto,
+} from '../';
 
 export interface UserRepository {
   findById(id: string): Promise<UserEntity | null>;
   findByEmail(email: string): Promise<UserEntity | null>;
-  findAll(): Promise<UserEntity[]>;
-  create(entity: Partial<UserEntity>): Promise<UserEntity>;
-  update(id: string, entity: Partial<UserEntity>): Promise<UserEntity | null>;
+  findAll(): Promise<UserWithSchedulesEntity[]>;
+  create(registerUserDto: RegisterUserDto): Promise<UserEntity>;
+  update(id: string, updateUserDto: UpdateUserDto): Promise<UserEntity | null>;
   delete(id: string): Promise<boolean>;
 }

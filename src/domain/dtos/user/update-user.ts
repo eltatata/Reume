@@ -1,4 +1,4 @@
-import { ValidationResult } from '../../';
+import { ValidationResult, UserRole } from '../../';
 import { updateUserSchema, ZodAdapter } from '../../../config';
 
 export interface UpdateUserDtoProps {
@@ -6,6 +6,7 @@ export interface UpdateUserDtoProps {
   lastname?: string;
   email?: string;
   password?: string;
+  role?: UserRole;
   verified?: boolean;
   phone?: string;
 }
@@ -16,6 +17,7 @@ export class UpdateUserDto {
     public readonly lastname?: string,
     public readonly email?: string,
     public readonly password?: string,
+    public readonly role?: UserRole,
     public readonly verified?: boolean,
     public readonly phone?: string,
   ) {}

@@ -5,6 +5,13 @@ export interface LoginUserUseCaseResponse {
   user: UserEntity;
 }
 
+export interface LoginUserUnverifiedResponse {
+  id: string;
+  email: string;
+}
+
 export interface LoginUserUseCase {
-  execute(loginUserDto: LoginUserDto): Promise<LoginUserUseCaseResponse>;
+  execute(
+    loginUserDto: LoginUserDto,
+  ): Promise<LoginUserUseCaseResponse | LoginUserUnverifiedResponse>;
 }

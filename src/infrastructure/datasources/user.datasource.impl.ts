@@ -1,6 +1,7 @@
 import { prisma } from '../../data/prisma.connection';
 import {
   UserEntity,
+  UserWithSchedulesEntity,
   UserDatasource,
   RegisterUserDto,
   UpdateUserDto,
@@ -18,27 +19,48 @@ export class UserDatasourceImpl implements UserDatasource {
 
   async findById(id: string): Promise<UserEntity | null> {
     const user = await prisma.user.findUnique({
-      where: {
-        id,
+      where: { id },
+      include: {
+        schedules: true,
       },
     });
-    return user ? UserEntity.toEntity(user) : null;
+
+    if (!user) return null;
+
+    return UserWithSchedulesEntity.toEntity({
+      ...user,
+      schedulesCount: user.schedules.length,
+    });
   }
 
-  async findAll(): Promise<UserEntity[]> {
-    const users = await prisma.user.findMany();
-    return users.map((user) => UserEntity.toEntity(user));
+  async findAll(): Promise<UserWithSchedulesEntity[]> {
+    const users = await prisma.user.findMany({
+      include: {
+        _count: {
+          select: {
+            schedules: true,
+          },
+        },
+      },
+    });
+
+    return users.map((user) => {
+      return UserWithSchedulesEntity.toEntity({
+        ...user,
+        schedulesCount: user._count.schedules,
+      });
+    });
   }
 
-  async create(user: RegisterUserDto): Promise<UserEntity> {
+  async create(registerUserDto: RegisterUserDto): Promise<UserEntity> {
     const newUser = await prisma.user.create({
       data: {
-        firstName: user.firstname,
-        lastName: user.lastname,
-        email: user.email,
-        password: user.password,
+        firstName: registerUserDto.firstname,
+        lastName: registerUserDto.lastname,
+        email: registerUserDto.email,
+        password: registerUserDto.password,
         role: 'USER',
-        phone: user.phone,
+        phone: registerUserDto.phone,
       },
     });
     return UserEntity.toEntity(newUser);
@@ -50,7 +72,15 @@ export class UserDatasourceImpl implements UserDatasource {
   ): Promise<UserEntity | null> {
     const updatedUser = await prisma.user.update({
       where: { id },
-      data: updateUserDto,
+      data: {
+        firstName: updateUserDto.firstname,
+        lastName: updateUserDto.lastname,
+        email: updateUserDto.email,
+        password: updateUserDto.password,
+        role: updateUserDto.role,
+        phone: updateUserDto.phone,
+        verified: updateUserDto.verified,
+      },
     });
     return updatedUser ? UserEntity.toEntity(updatedUser) : null;
   }
