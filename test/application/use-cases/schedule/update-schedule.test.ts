@@ -1,4 +1,8 @@
-import { ScheduleEntity, UpdateScheduleDTO } from '../../../../src/domain';
+import {
+  ScheduleEntity,
+  UpdateScheduleDTO,
+  UserRole,
+} from '../../../../src/domain';
 import { UpdateSchedule } from '../../../../src/application';
 
 describe('UpdateSchedule', () => {
@@ -17,7 +21,7 @@ describe('UpdateSchedule', () => {
     jest.clearAllMocks();
   });
 
-  test('should update a schedule successfully', async () => {
+  test('should update a schedule successfully as owner', async () => {
     const userId = '123e4567-e89b-12d3-a456-426614174000';
     const scheduleId = '123e4567-e89b-12d3-a456-426614174001';
     const existingSchedule = new ScheduleEntity(
@@ -55,6 +59,7 @@ describe('UpdateSchedule', () => {
       userId,
       scheduleId,
       validatedData!,
+      UserRole.USER,
     );
 
     expect(result).toEqual(expect.any(ScheduleEntity));
@@ -80,6 +85,60 @@ describe('UpdateSchedule', () => {
     );
   });
 
+  test('should update a schedule successfully as admin (not owner)', async () => {
+    const adminId = '123e4567-e89b-12d3-a456-426614174000';
+    const scheduleId = '123e4567-e89b-12d3-a456-426614174001';
+    const differentUserId = 'different-user-id';
+    const existingSchedule = new ScheduleEntity(
+      scheduleId,
+      differentUserId,
+      'Meeting',
+      new Date(new Date().setHours(11, 0, 0, 0)).toISOString(),
+      new Date(new Date().setHours(12, 0, 0, 0)).toISOString(),
+      new Date(),
+      new Date(),
+    );
+    const updatedData = {
+      title: 'Updated Meeting',
+      startTime: new Date(new Date().setHours(12, 30, 0, 0)).toISOString(),
+      endTime: new Date(new Date().setHours(13, 0, 0, 0)).toISOString(),
+    };
+
+    scheduleRepository.findById.mockResolvedValue(existingSchedule);
+    scheduleRepository.findOverlapping.mockResolvedValue([]);
+    scheduleRepository.update.mockResolvedValue(
+      new ScheduleEntity(
+        scheduleId,
+        differentUserId,
+        updatedData.title,
+        updatedData.startTime,
+        updatedData.endTime,
+        new Date(),
+        new Date(),
+      ),
+    );
+
+    const { validatedData } = UpdateScheduleDTO.create(updatedData);
+
+    const result = await updateSchedule.execute(
+      adminId,
+      scheduleId,
+      validatedData!,
+      UserRole.ADMIN,
+    );
+
+    expect(result).toEqual(expect.any(ScheduleEntity));
+    expect(scheduleRepository.findById).toHaveBeenCalledWith(scheduleId);
+    expect(scheduleRepository.findOverlapping).toHaveBeenCalledWith(
+      validatedData!.startTime,
+      validatedData!.endTime,
+    );
+    expect(scheduleRepository.update).toHaveBeenCalledWith(
+      scheduleId,
+      validatedData!,
+    );
+  });
+
   test('should throw not found error if schedule does not exist', async () => {
     const userId = '123e4567-e89b-12d3-a456-426614174000';
     const scheduleId = '123e4567-e89b-12d3-a456-426614174001';
@@ -94,12 +153,12 @@ describe('UpdateSchedule', () => {
     const { validatedData } = UpdateScheduleDTO.create(updatedData);
 
     await expect(
-      updateSchedule.execute(userId, scheduleId, validatedData!),
+      updateSchedule.execute(userId, scheduleId, validatedData!, UserRole.USER),
     ).rejects.toThrow('Schedule not found');
     expect(scheduleRepository.findById).toHaveBeenCalledWith(scheduleId);
   });
 
-  test('should throw forbidden error if user does not own the schedule', async () => {
+  test('should throw forbidden error if regular user does not own the schedule', async () => {
     const userId = '123e4567-e89b-12d3-a456-426614174000';
     const scheduleId = '123e4567-e89b-12d3-a456-426614174001';
     const existingSchedule = new ScheduleEntity(
@@ -122,7 +181,7 @@ describe('UpdateSchedule', () => {
     scheduleRepository.findById.mockResolvedValue(existingSchedule);
 
     await expect(
-      updateSchedule.execute(userId, scheduleId, validatedData!),
+      updateSchedule.execute(userId, scheduleId, validatedData!, UserRole.USER),
     ).rejects.toThrow('You do not have permission to update this schedule');
     expect(scheduleRepository.findById).toHaveBeenCalledWith(scheduleId);
     expect(scheduleRepository.update).not.toHaveBeenCalled();
@@ -163,7 +222,7 @@ describe('UpdateSchedule', () => {
     ]);
 
     await expect(
-      updateSchedule.execute(userId, scheduleId, validatedData!),
+      updateSchedule.execute(userId, scheduleId, validatedData!, UserRole.USER),
     ).rejects.toThrow('Schedule overlaps with existing schedules');
     expect(scheduleRepository.findById).toHaveBeenCalledWith(scheduleId);
     expect(scheduleRepository.findOverlapping).toHaveBeenCalledWith(

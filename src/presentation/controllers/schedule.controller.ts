@@ -59,6 +59,7 @@ export class ScheduleController {
   };
 
   updateSchedule = (req: RequestExtended, res: Response) => {
+    const { id: userId, role } = req.user!;
     const { errors, validatedData } = UpdateScheduleDTO.create(req.body);
     if (errors) {
       res.status(400).json({ errors });
@@ -66,14 +67,16 @@ export class ScheduleController {
     }
 
     new UpdateSchedule(this.scheduleRepository)
-      .execute(req.user!.id, req.params.id, validatedData!)
+      .execute(userId, req.params.id, validatedData!, role)
       .then((data) => res.status(200).json(data))
       .catch((error) => ErrorHandlerService.handleError(error, res));
   };
 
   deleteSchedule = (req: RequestExtended, res: Response) => {
+    const { id: userId, role } = req.user!;
+
     new DeleteSchedule(this.scheduleRepository)
-      .execute(req.user!.id, req.params.id)
+      .execute(userId, req.params.id, role)
       .then(() => res.status(204).send())
       .catch((error) => ErrorHandlerService.handleError(error, res));
   };
