@@ -3,6 +3,7 @@ import {
   CustomError,
   ScheduleRepository,
   DeleteScheduleUseCase,
+  UserRole,
 } from '../../../domain';
 
 const logger = loggerAdapter('DeleteScheduleUseCase');
@@ -10,12 +11,17 @@ const logger = loggerAdapter('DeleteScheduleUseCase');
 export class DeleteSchedule implements DeleteScheduleUseCase {
   constructor(private readonly scheduleRepository: ScheduleRepository) {}
 
-  async execute(userId: string, scheduleId: string): Promise<void> {
+  async execute(
+    userId: string,
+    scheduleId: string,
+    userRole: UserRole,
+  ): Promise<void> {
     logger.log(`Deleting schedule: ${scheduleId}`);
 
     const existingSchedule = await this.scheduleRepository.findById(scheduleId);
     if (!existingSchedule) throw CustomError.notFound('Schedule not found');
-    if (existingSchedule.userId !== userId) {
+
+    if (userRole !== UserRole.ADMIN && existingSchedule.userId !== userId) {
       throw CustomError.forbidden(
         'You do not have permission to delete this schedule',
       );

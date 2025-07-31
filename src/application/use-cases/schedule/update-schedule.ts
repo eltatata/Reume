@@ -5,6 +5,7 @@ import {
   ScheduleEntity,
   ScheduleRepository,
   UpdateScheduleUseCase,
+  UserRole,
 } from '../../../domain';
 
 const logger = loggerAdapter('UpdateScheduleUseCase');
@@ -16,12 +17,14 @@ export class UpdateSchedule implements UpdateScheduleUseCase {
     userId: string,
     scheduleId: string,
     updateScheduleDTO: UpdateScheduleDTO,
+    userRole: UserRole,
   ): Promise<ScheduleEntity> {
     logger.log(`Updating schedule: ${scheduleId}`);
 
     const existingSchedule = await this.scheduleRepository.findById(scheduleId);
     if (!existingSchedule) throw CustomError.notFound('Schedule not found');
-    if (existingSchedule.userId !== userId) {
+
+    if (userRole !== UserRole.ADMIN && existingSchedule.userId !== userId) {
       throw CustomError.forbidden(
         'You do not have permission to update this schedule',
       );
