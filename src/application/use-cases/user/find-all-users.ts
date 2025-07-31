@@ -15,8 +15,9 @@ export class FindAllUsers implements FindAllUsersUseCase {
     const users = await this.userRepository.findAll();
 
     const usersWithoutPassword = users.map((user) => {
-      delete user.password;
-      return user;
+      const userWithoutPassword = { ...user };
+      delete userWithoutPassword.password;
+      return userWithoutPassword;
     });
 
     return usersWithoutPassword;

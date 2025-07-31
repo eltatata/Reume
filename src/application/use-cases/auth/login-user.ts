@@ -37,8 +37,9 @@ export class LoginUser implements LoginUserUseCase {
     if (!token) throw CustomError.internalServer('Failed to generate token');
     logger.log(`Token generated for ${user.email}, login successful`);
 
-    delete user.password;
+    const userWithoutPassword = { ...user };
+    delete userWithoutPassword.password;
 
-    return { token, user };
+    return { token, user: userWithoutPassword };
   }
 }

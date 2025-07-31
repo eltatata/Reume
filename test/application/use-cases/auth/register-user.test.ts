@@ -4,6 +4,7 @@ import { RegisterUser } from '../../../../src/application';
 describe('RegisterUser', () => {
   const emailService = {
     sendVerificationEmail: jest.fn(),
+    sendEmailVerificationLink: jest.fn(),
   };
 
   const otpRepository = {

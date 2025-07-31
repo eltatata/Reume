@@ -168,7 +168,12 @@ describe('FindAvailableTimesDTO', () => {
     // Only test if today is not a weekend
     if (today.getDay() !== 0 && today.getDay() !== 6) {
       const data = {
-        date: today.toISOString().split('T')[0],
+        date:
+          today.getFullYear() +
+          '-' +
+          String(today.getMonth() + 1).padStart(2, '0') +
+          '-' +
+          String(today.getDate()).padStart(2, '0'),
       };
 
       const result = FindAvailableTimesDTO.create(data);

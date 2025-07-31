@@ -19,11 +19,18 @@ export class UserDatasourceImpl implements UserDatasource {
 
   async findById(id: string): Promise<UserEntity | null> {
     const user = await prisma.user.findUnique({
-      where: {
-        id,
+      where: { id },
+      include: {
+        schedules: true,
       },
     });
-    return user ? UserEntity.toEntity(user) : null;
+
+    if (!user) return null;
+
+    return UserWithSchedulesEntity.toEntity({
+      ...user,
+      schedulesCount: user.schedules.length,
+    });
   }
 
   async findAll(): Promise<UserWithSchedulesEntity[]> {
@@ -65,7 +72,15 @@ export class UserDatasourceImpl implements UserDatasource {
   ): Promise<UserEntity | null> {
     const updatedUser = await prisma.user.update({
       where: { id },
-      data: updateUserDto,
+      data: {
+        firstName: updateUserDto.firstname,
+        lastName: updateUserDto.lastname,
+        email: updateUserDto.email,
+        password: updateUserDto.password,
+        role: updateUserDto.role,
+        phone: updateUserDto.phone,
+        verified: updateUserDto.verified,
+      },
     });
     return updatedUser ? UserEntity.toEntity(updatedUser) : null;
   }

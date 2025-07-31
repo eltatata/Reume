@@ -27,4 +27,24 @@ export class EmailServiceImpl implements EmailService {
       html: body,
     });
   }
+
+  async sendEmailVerificationLink(
+    to: string,
+    verificationLink: string,
+  ): Promise<void> {
+    const body = `
+      <h1>Email Verification</h1>
+      <p>Click the link below to verify your email address:</p>
+      <a href="${verificationLink}" style="color: #4CAF50; font-size: 18px;">Verify Email</a>
+      <p>If you didn't request this verification, please ignore this email.</p>
+      <p>Best regards,<br>The Team</p>
+    `;
+
+    await this.resend.emails.send({
+      from: 'Resend <onboarding@resend.dev>',
+      to,
+      subject: 'Verify your email address',
+      html: body,
+    });
+  }
 }
