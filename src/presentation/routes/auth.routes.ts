@@ -4,7 +4,7 @@ import {
   UserRepositoryImpl,
   OtpDatasourceImpl,
   OtpRepositoryImpl,
-  EmailServiceImpl,
+  EmailServiceFactory,
 } from '../../infrastructure';
 import { AuthController } from '../';
 
@@ -12,7 +12,7 @@ export class AuthRoutes {
   static get routes(): Router {
     const router = Router();
 
-    const emailService = new EmailServiceImpl();
+    const emailService = EmailServiceFactory.create();
 
     const otpDatasource = new OtpDatasourceImpl();
     const otpRepository = new OtpRepositoryImpl(otpDatasource);
