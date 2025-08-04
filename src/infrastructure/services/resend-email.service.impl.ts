@@ -2,7 +2,7 @@ import { Resend } from 'resend';
 import { envs } from '../../config';
 import { EmailService } from '../../domain';
 
-export class EmailServiceImpl implements EmailService {
+export class ResendEmailServiceImpl implements EmailService {
   private readonly resend = new Resend(envs.RESEND_API_KEY);
 
   async sendVerificationEmail(

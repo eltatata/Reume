@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import {
-  EmailServiceImpl,
+  EmailServiceFactory,
   UserDatasourceImpl,
   UserRepositoryImpl,
 } from '../../infrastructure';
@@ -11,7 +11,7 @@ export class UserRoutes {
   static get routes(): Router {
     const router = Router();
 
-    const emailService = new EmailServiceImpl();
+    const emailService = EmailServiceFactory.create();
 
     const userDatasource = new UserDatasourceImpl();
     const userRepository = new UserRepositoryImpl(userDatasource);

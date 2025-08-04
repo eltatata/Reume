@@ -5,6 +5,7 @@ WORKDIR /app
 
 COPY package*.json ./
 COPY tsconfig.json ./
+COPY prisma ./prisma
 
 RUN npm ci
 

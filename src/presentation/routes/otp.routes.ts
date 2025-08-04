@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import {
-  EmailServiceImpl,
+  EmailServiceFactory,
   OtpDatasourceImpl,
   OtpRepositoryImpl,
   UserDatasourceImpl,
@@ -12,7 +12,7 @@ export class OtpRoutes {
   static get routes(): Router {
     const router = Router();
 
-    const emailService = new EmailServiceImpl();
+    const emailService = EmailServiceFactory.create();
 
     const otpDatasource = new OtpDatasourceImpl();
     const otpRepository = new OtpRepositoryImpl(otpDatasource);

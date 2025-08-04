@@ -2,18 +2,25 @@ import request from 'supertest';
 import { Server, AppRoutes } from '../../../src/presentation';
 import { prisma } from '../../../src/data/prisma.connection';
 import { User } from '../../../generated/prisma';
-import { EmailServiceImpl } from '../../../src/infrastructure';
+import { EmailServiceFactory } from '../../../src/infrastructure';
+import { EmailService } from '../../../src/domain';
 
 describe('OTP Integration Tests', () => {
   let server: Server;
   let user: User;
-  let sendSpy: jest.SpyInstance;
+  let mockEmailService: jest.Mocked<EmailService>;
+  let factorySpy: jest.SpyInstance;
   const PORT = 3003;
 
   beforeAll(async () => {
-    sendSpy = jest
-      .spyOn(EmailServiceImpl.prototype, 'sendVerificationEmail')
-      .mockResolvedValue(undefined);
+    mockEmailService = {
+      sendVerificationEmail: jest.fn().mockResolvedValue(undefined),
+      sendEmailVerificationLink: jest.fn().mockResolvedValue(undefined),
+    };
+
+    factorySpy = jest
+      .spyOn(EmailServiceFactory, 'create')
+      .mockReturnValue(mockEmailService);
 
     server = new Server({
       port: PORT,
@@ -54,7 +61,7 @@ describe('OTP Integration Tests', () => {
   });
 
   afterAll(async () => {
-    sendSpy.mockRestore();
+    factorySpy.mockRestore();
 
     server.close();
 
@@ -152,8 +159,8 @@ describe('OTP Integration Tests', () => {
         .send(validResendData);
 
       expect(response.status).toBe(200);
-      expect(sendSpy).toHaveBeenCalledTimes(1);
-      expect(sendSpy).toHaveBeenCalledWith(
+      expect(mockEmailService.sendVerificationEmail).toHaveBeenCalledTimes(1);
+      expect(mockEmailService.sendVerificationEmail).toHaveBeenCalledWith(
         user.email,
         `${user.firstName} ${user.lastName}`,
         expect.any(String),
