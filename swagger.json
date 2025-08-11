@@ -1692,6 +1692,11 @@
             "format": "time",
             "description": "End time of the schedule",
             "example": "2025-05-23T13:30:00.000Z"
+          },
+          "timeZone": {
+            "type": "string",
+            "description": "Time zone of the schedule",
+            "example": "America/New_York"
           }
         }
       },

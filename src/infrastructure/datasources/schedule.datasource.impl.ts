@@ -80,7 +80,9 @@ export class ScheduleDatasourceImpl implements ScheduleDatasource {
     const schedule = await prisma.schedule.create({
       data: {
         userId,
-        ...createScheduleDto,
+        title: createScheduleDto.title,
+        startTime: createScheduleDto.startTime,
+        endTime: createScheduleDto.endTime,
       },
     });
     return ScheduleEntity.toEntity(schedule);
@@ -92,7 +94,11 @@ export class ScheduleDatasourceImpl implements ScheduleDatasource {
   ): Promise<ScheduleEntity | null> {
     const schedule = await prisma.schedule.update({
       where: { id },
-      data: updateScheduleDto,
+      data: {
+        title: updateScheduleDto.title,
+        startTime: updateScheduleDto.startTime,
+        endTime: updateScheduleDto.endTime,
+      },
     });
     return ScheduleEntity.toEntity(schedule);
   }
