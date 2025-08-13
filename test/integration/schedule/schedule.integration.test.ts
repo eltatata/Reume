@@ -3,15 +3,21 @@ import { Server, AppRoutes } from '../../../src/presentation';
 import { prisma } from '../../../src/data/prisma.connection';
 import { User } from '../../../generated/prisma';
 
-const getNextWeekday = (daysFromToday: number = 1): Date => {
-  const date = new Date();
-  date.setDate(date.getDate() + daysFromToday);
-  // Ensure it's not a weekend
-  while (date.getDay() === 0 || date.getDay() === 6) {
-    date.setDate(date.getDate() + 1);
-  }
+const toISOInTimeZone = (timeZone: string, hour: number, minute = 0) => {
+  const { year, month, day } = Object.fromEntries(
+    new Intl.DateTimeFormat('en-US', {
+      timeZone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    })
+      .formatToParts(new Date())
+      .map((p) => [p.type, p.value]),
+  );
 
-  return date;
+  return new Date(
+    Date.UTC(+year, +month - 1, +day, hour, minute),
+  ).toISOString();
 };
 
 describe('Schedule Integration Tests', () => {
@@ -64,14 +70,17 @@ describe('Schedule Integration Tests', () => {
 
   describe('POST /api/schedule', () => {
     test('should create a schedule', async () => {
+      const timeZone = 'Europe/Paris';
+
       const response = await request(server.app)
         .post('/api/schedule')
         .set('Authorization', `Bearer ${accessToken}`)
         .send({
           title: 'Test Schedule',
           description: 'This is a test schedule',
-          startTime: new Date(new Date().setHours(11, 0, 0, 0)).toISOString(),
-          endTime: new Date(new Date().setHours(12, 0, 0, 0)).toISOString(),
+          startTime: toISOInTimeZone(timeZone, 11),
+          endTime: toISOInTimeZone(timeZone, 12),
+          timeZone,
         });
 
       expect(response.status).toBe(201);
@@ -110,23 +119,28 @@ describe('Schedule Integration Tests', () => {
 
   describe('GET /api/schedule/available-times/:date', () => {
     test('should get available times for a specific date', async () => {
-      const validDate = getNextWeekday();
-      const date = validDate.toISOString().split('T')[0];
+      const timeZone = 'Asia/Dubai';
+
+      const date = new Intl.DateTimeFormat('en-CA', { timeZone }).format(
+        new Date(Date.now() + 1 * 86400000),
+      );
 
       const response = await request(server.app)
-        .get(`/api/schedule/available-times/${date}`)
+        .get(`/api/schedule/available-times/${date}?timeZone=America/New_York`)
         .set('Authorization', `Bearer ${accessToken}`);
 
-      expect(response.body.availableTimes).toHaveLength(49);
-      expect(response.body.availableTimes[0]).toBe('06:00');
+      expect(response.body.availableTimes).toHaveLength(96);
+      expect(response.body.availableTimes[0]).toBe('00:00');
       expect(
         response.body.availableTimes[response.body.availableTimes.length - 1],
-      ).toBe('18:00');
+      ).toBe('23:45');
     });
   });
 
   describe('PUT /api/schedule/:id', () => {
     test('should update a schedule', async () => {
+      const timeZone = 'America/Bogota';
+
       const schedule = await prisma.schedule.findFirst({
         where: { userId: user.id },
       });
@@ -137,8 +151,9 @@ describe('Schedule Integration Tests', () => {
         .send({
           title: 'Updated Schedule',
           description: 'This is an updated test schedule',
-          startTime: new Date(new Date().setHours(13, 0, 0, 0)).toISOString(),
-          endTime: new Date(new Date().setHours(14, 0, 0, 0)).toISOString(),
+          startTime: toISOInTimeZone(timeZone, 13),
+          endTime: toISOInTimeZone(timeZone, 14),
+          timeZone,
         });
 
       expect(response.status).toBe(200);
