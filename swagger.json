@@ -595,6 +595,16 @@
             }
           },
           {
+            "name": "timeZone",
+            "in": "query",
+            "required": true,
+            "description": "Time zone in IANA format (e.g., 'America/New_York')",
+            "schema": {
+              "type": "string",
+              "example": "America/New_York"
+            }
+          },
+          {
             "name": "schedule",
             "in": "query",
             "required": false,

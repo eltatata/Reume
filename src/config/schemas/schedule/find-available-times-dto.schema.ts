@@ -46,6 +46,7 @@ export const findAvailableTimesSchema: z.ZodType<FindAvailableTimesDTO> =
         });
       }
     }),
+    timeZone: z.string().min(1, 'Time zone is required'),
     schedule: z
       .string()
       .trim()

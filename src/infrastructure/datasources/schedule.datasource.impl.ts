@@ -46,8 +46,8 @@ export class ScheduleDatasourceImpl implements ScheduleDatasource {
     const [year, month, day] = findAvailableTimesDto.date
       .split('-')
       .map(Number);
-    const startOfDay = new Date(year, month - 1, day, 6, 0, 0, 0);
-    const endOfDay = new Date(year, month - 1, day, 18, 0, 0, 0);
+    const startOfDay = new Date(year, month - 1, day, 0, 0, 0, 0);
+    const endOfDay = new Date(year, month - 1, day, 23, 59, 59, 999);
 
     const schedules = await prisma.schedule.findMany({
       where: {
