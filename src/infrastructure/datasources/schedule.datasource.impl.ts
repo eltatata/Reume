@@ -46,8 +46,8 @@ export class ScheduleDatasourceImpl implements ScheduleDatasource {
     const [year, month, day] = findAvailableTimesDto.date
       .split('-')
       .map(Number);
-    const startOfDay = new Date(year, month - 1, day, 6, 0, 0, 0);
-    const endOfDay = new Date(year, month - 1, day, 18, 0, 0, 0);
+    const startOfDay = new Date(year, month - 1, day, 0, 0, 0, 0);
+    const endOfDay = new Date(year, month - 1, day, 23, 59, 59, 999);
 
     const schedules = await prisma.schedule.findMany({
       where: {
@@ -80,7 +80,9 @@ export class ScheduleDatasourceImpl implements ScheduleDatasource {
     const schedule = await prisma.schedule.create({
       data: {
         userId,
-        ...createScheduleDto,
+        title: createScheduleDto.title,
+        startTime: createScheduleDto.startTime,
+        endTime: createScheduleDto.endTime,
       },
     });
     return ScheduleEntity.toEntity(schedule);
@@ -92,7 +94,11 @@ export class ScheduleDatasourceImpl implements ScheduleDatasource {
   ): Promise<ScheduleEntity | null> {
     const schedule = await prisma.schedule.update({
       where: { id },
-      data: updateScheduleDto,
+      data: {
+        title: updateScheduleDto.title,
+        startTime: updateScheduleDto.startTime,
+        endTime: updateScheduleDto.endTime,
+      },
     });
     return ScheduleEntity.toEntity(schedule);
   }

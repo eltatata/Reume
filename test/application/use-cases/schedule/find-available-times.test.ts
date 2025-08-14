@@ -1,17 +1,6 @@
 import { ScheduleEntity } from '../../../../src/domain';
 import { FindAvailableTimes } from '../../../../src/application';
 
-const getNextWeekday = (daysFromToday: number = 1): Date => {
-  const date = new Date();
-  date.setDate(date.getDate() + daysFromToday);
-  // Ensure it's not a weekend
-  while (date.getDay() === 0 || date.getDay() === 6) {
-    date.setDate(date.getDate() + 1);
-  }
-
-  return date;
-};
-
 describe('FindAvailableTimes', () => {
   const scheduleRepository = {
     findById: jest.fn(),
@@ -29,22 +18,32 @@ describe('FindAvailableTimes', () => {
   });
 
   test('should return all available times for a day with no schedules', async () => {
-    const validDate = getNextWeekday();
-    const date = validDate.toISOString().split('T')[0];
+    const timeZone = 'Asia/Dubai';
+
+    const date = new Intl.DateTimeFormat('en-CA', { timeZone }).format(
+      new Date(Date.now() + 1 * 86400000),
+    );
 
     scheduleRepository.findByDate.mockResolvedValue([]);
 
-    const result = await findAvailableTimes.execute({ date });
+    const result = await findAvailableTimes.execute({ date, timeZone });
 
-    expect(result).toHaveLength(49);
-    expect(result[0]).toBe('06:00');
-    expect(result[result.length - 1]).toBe('18:00');
-    expect(scheduleRepository.findByDate).toHaveBeenCalledWith({ date });
+    expect(result).toHaveLength(96);
+    expect(result[0]).toBe('00:00');
+    expect(result[result.length - 1]).toBe('23:45');
+    expect(scheduleRepository.findByDate).toHaveBeenCalledWith({
+      date,
+      timeZone,
+    });
   });
 
   test('should exclude occupied time slots from available times', async () => {
-    const validDate = getNextWeekday();
-    const date = validDate.toISOString().split('T')[0];
+    const timeZone = 'America/Bogota';
+
+    const date = new Intl.DateTimeFormat('en-CA', { timeZone }).format(
+      new Date(Date.now() + 1 * 86400000),
+    );
+
     const schedules = [
       new ScheduleEntity(
         '123e4567-e89b-12d3-a456-426614174001',
@@ -68,10 +67,9 @@ describe('FindAvailableTimes', () => {
 
     scheduleRepository.findByDate.mockResolvedValue(schedules);
 
-    const result = await findAvailableTimes.execute({ date });
+    const result = await findAvailableTimes.execute({ date, timeZone });
 
-    // Should not include time slots between 6:00-10:00 AM and 1:00-3:00 PM
-    expect(result).not.toContain('06:00');
+    // Should not include time slots between 6:00-7:00 AM and 1:00-3:00 PM
     expect(result).not.toContain('06:15');
     expect(result).not.toContain('06:30');
     expect(result).not.toContain('06:45');
@@ -80,20 +78,30 @@ describe('FindAvailableTimes', () => {
     expect(result).not.toContain('13:30');
     expect(result).not.toContain('13:45');
 
-    expect(scheduleRepository.findByDate).toHaveBeenCalledWith({ date });
+    expect(scheduleRepository.findByDate).toHaveBeenCalledWith({
+      date,
+      timeZone,
+    });
   });
 
   test('should return an empty array for invalid date format', async () => {
     const invalidDate = '2025/06/15';
 
-    const result = await findAvailableTimes.execute({ date: invalidDate });
+    const result = await findAvailableTimes.execute({
+      date: invalidDate,
+      timeZone: 'Europe/Zurich',
+    });
 
     expect(result).toEqual([]);
   });
 
   test('should handle schedules that span partial time slots', async () => {
-    const validDate = getNextWeekday();
-    const date = validDate.toISOString().split('T')[0];
+    const timeZone = 'America/Bogota';
+
+    const date = new Intl.DateTimeFormat('en-CA', { timeZone }).format(
+      new Date(Date.now() + 1 * 86400000),
+    );
+
     const schedules = [
       new ScheduleEntity(
         '123e4567-e89b-12d3-a456-426614174001',
@@ -108,7 +116,7 @@ describe('FindAvailableTimes', () => {
 
     scheduleRepository.findByDate.mockResolvedValue(schedules);
 
-    const result = await findAvailableTimes.execute({ date });
+    const result = await findAvailableTimes.execute({ date, timeZone });
 
     // Should not include 8:00 and 9:00 (slots that are occupied)
     expect(result).not.toContain('08:15');
@@ -119,6 +127,9 @@ describe('FindAvailableTimes', () => {
     expect(result).toContain('08:00');
     expect(result).toContain('09:00');
 
-    expect(scheduleRepository.findByDate).toHaveBeenCalledWith({ date });
+    expect(scheduleRepository.findByDate).toHaveBeenCalledWith({
+      date,
+      timeZone,
+    });
   });
 });

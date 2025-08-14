@@ -5,6 +5,7 @@ interface CreateScheduleDTOProps {
   title: string;
   startTime: string | Date;
   endTime: string | Date;
+  timeZone: string;
 }
 
 export class CreateScheduleDTO {
@@ -12,6 +13,7 @@ export class CreateScheduleDTO {
     public readonly title: string,
     public readonly startTime: string | Date,
     public readonly endTime: string | Date,
+    public readonly timeZone: string,
   ) {}
 
   static create(
@@ -21,7 +23,6 @@ export class CreateScheduleDTO {
       createScheduleSchema,
       props,
     );
-
     return errors ? { errors } : { validatedData };
   }
 }

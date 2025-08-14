@@ -1,6 +1,23 @@
 import { ScheduleEntity, CreateScheduleDTO } from '../../../../src/domain';
 import { CreateSchedule } from '../../../../src/application';
 
+const toISOInTimeZone = (timeZone: string, hour: number, minute = 0) => {
+  const { year, month, day } = Object.fromEntries(
+    new Intl.DateTimeFormat('en-US', {
+      timeZone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    })
+      .formatToParts(new Date())
+      .map((p) => [p.type, p.value]),
+  );
+
+  return new Date(
+    Date.UTC(+year, +month - 1, +day, hour, minute),
+  ).toISOString();
+};
+
 describe('CreateSchedule', () => {
   const scheduleRepository = {
     findById: jest.fn(),
@@ -18,11 +35,13 @@ describe('CreateSchedule', () => {
   });
 
   test('should create a schedule successfully', async () => {
+    const timeZone = 'America/New_York';
     const userId = '123e4567-e89b-12d3-a456-426614174000';
     const scheduleData = {
       title: 'Meeting',
-      startTime: new Date(new Date().setHours(11, 0, 0, 0)).toISOString(),
-      endTime: new Date(new Date().setHours(12, 0, 0, 0)).toISOString(),
+      startTime: toISOInTimeZone(timeZone, 11, 0),
+      endTime: toISOInTimeZone(timeZone, 12, 0),
+      timeZone,
     };
 
     const { validatedData } = CreateScheduleDTO.create(scheduleData);
@@ -65,11 +84,13 @@ describe('CreateSchedule', () => {
   });
 
   test('should throw an error if schedule overlaps with existing schedules', async () => {
+    const timeZone = 'America/New_York';
     const userId = '123e4567-e89b-12d3-a456-426614174000';
     const scheduleData = {
       title: 'Meeting',
-      startTime: new Date(new Date().setHours(11, 0, 0, 0)).toISOString(),
-      endTime: new Date(new Date().setHours(12, 0, 0, 0)).toISOString(),
+      startTime: toISOInTimeZone(timeZone, 11, 0),
+      endTime: toISOInTimeZone(timeZone, 12, 0),
+      timeZone,
     };
 
     const { validatedData } = CreateScheduleDTO.create(scheduleData);

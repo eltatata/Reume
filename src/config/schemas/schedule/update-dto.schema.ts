@@ -20,6 +20,7 @@ export const updateScheduleSchema: z.ZodType<UpdateScheduleDTO> = z
         message: 'End must be a valid ISO date string',
       })
       .transform((val) => new Date(val)),
+    timeZone: z.string().min(1, 'Time zone is required'),
   })
   .refine((data) => data.startTime < data.endTime, {
     message: 'End time must be after start time',
@@ -27,11 +28,22 @@ export const updateScheduleSchema: z.ZodType<UpdateScheduleDTO> = z
   })
   .refine(
     (data) => {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      const now = new Date();
+      const clientToday = new Date(
+        now.toLocaleString('en-US', { timeZone: data.timeZone }),
+      );
+      clientToday.setHours(0, 0, 0, 0);
+
+      const startInClientTz = new Date(
+        data.startTime.toLocaleString('en-US', { timeZone: data.timeZone }),
+      );
+      const endInClientTz = new Date(
+        data.endTime.toLocaleString('en-US', { timeZone: data.timeZone }),
+      );
+
       return (
-        data.startTime.getTime() >= today.getTime() &&
-        data.endTime.getTime() >= today.getTime()
+        startInClientTz.getTime() >= clientToday.getTime() &&
+        endInClientTz.getTime() >= clientToday.getTime()
       );
     },
     {
@@ -45,20 +57,6 @@ export const updateScheduleSchema: z.ZodType<UpdateScheduleDTO> = z
       data.endTime.getMinutes() % 15 === 0,
     {
       message: 'Times must be in 15-minute intervals',
-      path: ['startTime'],
-    },
-  )
-  .refine(
-    (data) => {
-      const isInRange = (date: Date) => {
-        const hour = date.getHours();
-        return hour >= 6 && hour <= 18;
-      };
-
-      return isInRange(data.startTime) && isInRange(data.endTime);
-    },
-    {
-      message: 'Times must be between 06:00 am and 06:00 pm',
       path: ['startTime'],
     },
   );

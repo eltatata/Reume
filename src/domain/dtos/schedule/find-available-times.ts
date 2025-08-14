@@ -3,12 +3,14 @@ import { ZodAdapter, findAvailableTimesSchema } from '../../../config';
 
 interface FindAvailableTimesDTOProps {
   date: string;
+  timeZone: string;
   schedule?: string;
 }
 
 export class FindAvailableTimesDTO {
   private constructor(
     public readonly date: string,
+    public readonly timeZone: string,
     public readonly schedule?: string,
   ) {}
 

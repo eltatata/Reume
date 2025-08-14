@@ -9,8 +9,8 @@ import {
 const logger = loggerAdapter('FindAvailableTimesUseCase');
 
 export class FindAvailableTimes implements FindAvailableTimesUseCase {
-  private readonly START_HOUR = '06:00';
-  private readonly END_HOUR = '18:00';
+  private readonly START_HOUR = '00:00';
+  private readonly END_HOUR = '23:59';
 
   constructor(private readonly scheduleRepository: ScheduleRepository) {}
 
@@ -28,6 +28,7 @@ export class FindAvailableTimes implements FindAvailableTimesUseCase {
     const availableSlots = this.calculateAvailableSlots(
       this.filterSchedules(findAvailableTimesDto.schedule, schedules),
       findAvailableTimesDto.date,
+      findAvailableTimesDto.timeZone,
     );
 
     logger.log(
@@ -47,6 +48,7 @@ export class FindAvailableTimes implements FindAvailableTimesUseCase {
   private calculateAvailableSlots(
     schedules: ScheduleEntity[],
     baseDate: string,
+    timeZone: string,
   ): string[] {
     const availableSlots: string[] = [];
 
@@ -56,8 +58,14 @@ export class FindAvailableTimes implements FindAvailableTimesUseCase {
     let currentTime = dayStart;
 
     for (const schedule of schedules) {
-      const scheduleStart = new Date(schedule.startTime);
-      const scheduleEnd = new Date(schedule.endTime);
+      const scheduleStart = this.convertToClientTimeZone(
+        new Date(schedule.startTime),
+        timeZone,
+      );
+      const scheduleEnd = this.convertToClientTimeZone(
+        new Date(schedule.endTime),
+        timeZone,
+      );
 
       if (currentTime < scheduleStart) {
         this.addAvailableSlot(availableSlots, currentTime, scheduleStart);
@@ -98,5 +106,10 @@ export class FindAvailableTimes implements FindAvailableTimesUseCase {
       .getMinutes()
       .toString()
       .padStart(2, '0')}`;
+  }
+
+  private convertToClientTimeZone(date: Date, timeZone: string): Date {
+    const clientDate = new Date(date.toLocaleString('en-US', { timeZone }));
+    return clientDate;
   }
 }
