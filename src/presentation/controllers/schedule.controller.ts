@@ -41,9 +41,10 @@ export class ScheduleController {
 
   findAvailableTimes = (req: RequestExtended, res: Response) => {
     const { date } = req.params;
-    const { schedule } = req.query;
+    const { schedule, timeZone } = req.query;
     const { errors, validatedData } = FindAvailableTimesDTO.create({
       date,
+      timeZone: timeZone as string,
       schedule: typeof schedule === 'string' ? schedule : undefined,
     });
 

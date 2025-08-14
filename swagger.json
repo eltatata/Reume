@@ -595,6 +595,16 @@
             }
           },
           {
+            "name": "timeZone",
+            "in": "query",
+            "required": true,
+            "description": "Time zone in IANA format (e.g., 'America/New_York')",
+            "schema": {
+              "type": "string",
+              "example": "America/New_York"
+            }
+          },
+          {
             "name": "schedule",
             "in": "query",
             "required": false,
@@ -1692,6 +1702,11 @@
             "format": "time",
             "description": "End time of the schedule",
             "example": "2025-05-23T13:30:00.000Z"
+          },
+          "timeZone": {
+            "type": "string",
+            "description": "Time zone of the schedule",
+            "example": "America/New_York"
           }
         }
       },
