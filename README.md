@@ -67,7 +67,8 @@ The project follows **Clean Architecture**, ensuring clear separation of concern
 - **Husky** Git hooks:
   - `pre-commit`: runs **ESLint** globally.  
   - `pre-push`: validates that the Docker image builds successfully.  
-- **ESLint** + **Prettier** for consistent code style.  
+- **ESLint** + **Prettier** for consistent code style.
+- **Git Flow** workflow followed for branching and release management.
 
 ---
 
